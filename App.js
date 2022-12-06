@@ -31,7 +31,7 @@ export default function App() {
           <Stack.Screen 
             name="Message"
             component={Message}
-            options={{ title: "Message" }}
+            options={({ route }) => ({ title: route.params.recievingUser })}
           />
           <Stack.Screen 
             name="Profile"
