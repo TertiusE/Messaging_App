@@ -16,9 +16,15 @@ var options = {
   headerTitleAlign: 'left',
 
 }
+import { SafeAreaView,View, Text } from "react-native";
+import { Provider } from 'react-redux';
+import store from './redux/store';
+import HandleNav from "./navigation/HandleNav";
 
 export default function App() {
+  
   return (
+    <Provider store={store}>
     <NavigationContainer>
       <Stack.Navigator>
         <Stack.Group screenOptions={options}>
@@ -46,14 +52,9 @@ export default function App() {
         </Stack.Group>
       </Stack.Navigator>
     </NavigationContainer>
+
+      <HandleNav />
+    </Provider>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
