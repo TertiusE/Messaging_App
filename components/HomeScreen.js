@@ -6,11 +6,14 @@ import {
   FlatList,
   StyleSheet,
   Image,
-  TextInput
+  TextInput,
+  TouchableHighlight,
 } from "react-native";
+import { useNavigation } from '@react-navigation/native';
 import "react-native-get-random-values";
 import { nanoid } from "nanoid";
 import Profile from "../assets/profile-icon.png";
+
 
 /* Sample Data */
 const DATA = [
@@ -34,25 +37,34 @@ const DATA = [
   },
 ];
 
-const MessageItem = ({ name, time, message }) => (
-  <View style={styles.itemContainer}>
-    <Image style={{ height: 60, width: 60 }} source={Profile} />
-    <View style={styles.itemSection}>
-      <View style={styles.itemHeader}>
-        <Text style={styles.itemName}>{name}</Text>
-        <Text style={styles.itemTime}>{time}</Text>
+function MessageItem({ name, time, message}) {
+  const navigation = useNavigation();
+  return (
+  <TouchableHighlight
+    onPress={() => navigation.navigate('Message', {
+      recievingUser:name
+    })}
+  >
+    <View style={styles.itemContainer}>
+      <Image style={{ height: 60, width: 60 }} source={Profile} />
+      <View style={styles.itemSection}>
+        <View style={styles.itemHeader}>
+          <Text style={styles.itemName}>{name}</Text>
+          <Text style={styles.itemTime}>{time}</Text>
+        </View>
+        <Text style={styles.itemMessage}>{message}</Text>
       </View>
-      <Text style={styles.itemMessage}>{message}</Text>
     </View>
-  </View>
+  </TouchableHighlight>
 );
+  }
 
 const renderMessageItem = ({ item }) => (
   <MessageItem name={item.name} time={item.time} message={item.message} />
 );
 
 const HomeScreen = () => {
-  const [text, setText] = useState("")
+  const [text, setText] = useState("");
   return (
     <View style={styles.mainContainer}>
       <TextInput
@@ -71,24 +83,24 @@ const HomeScreen = () => {
 };
 
 const styles = StyleSheet.create({
-  mainContainer: {  
-    flex:1,
-    backgroundColor:'white'
+  mainContainer: {
+    flex: 1,
+    backgroundColor: "white",
   },
   input: {
     padding: 15,
-    backgroundColor: '#E3E7EE',
-    margin:15,
-    borderRadius:10,
-    fontSize:18
+    backgroundColor: "#E3E7EE",
+    margin: 15,
+    borderRadius: 10,
+    fontSize: 18,
   },
   itemContainer: {
     flex: 1,
     flexDirection: "row",
     backgroundColor: "white",
     padding: 15,
-    borderBottomWidth:1,
-    borderBottomColor:'#D9D9D9'
+    borderBottomWidth: 1,
+    borderBottomColor: "#D9D9D9",
   },
   itemSection: {
     paddingTop: 5,
