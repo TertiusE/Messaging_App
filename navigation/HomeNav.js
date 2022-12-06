@@ -1,14 +1,44 @@
 import React from "react";
 import Home from "../screens/Home";
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import Message from "../screens/Message";
+import Profile from "../screens/Profile";
+import Settings from "../screens/Settings";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import MainTabNavigator from "./MainTabNavigator";
 
-const Tab = createBottomTabNavigator();
 
+var options = {
+  headerTitleAlign: 'left',
+
+}
+const Stack = createNativeStackNavigator();
 
 export default HomeNav = () => {
     return (
-        <Tab.Navigator headerMode='none'>
-            <Tab.Screen name="Home" component={Home} />
-        </Tab.Navigator>
+        <Stack.Navigator>
+            <Stack.Group screenOptions={options}>
+                <Stack.Screen
+                    name="Home"
+                    component={MainTabNavigator}
+                    options={{ headerShown: false }}
+
+                />
+                <Stack.Screen
+                    name="Message"
+                    component={Message}
+                    options={({ route }) => ({ title: route.params.recievingUser })}
+                />
+                <Stack.Screen
+                    name="Profile"
+                    component={Profile}
+                    options={{ title: "Profile" }}
+                />
+                <Stack.Screen
+                    name="Settings"
+                    component={Settings}
+                    options={{ title: "Settings" }}
+                />
+            </Stack.Group>
+        </Stack.Navigator>
     )
 }

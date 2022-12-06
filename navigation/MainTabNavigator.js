@@ -1,11 +1,11 @@
 import React from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import HomeScreen from "./HomeScreen";
-import Message from "./Message";
-import Profile from "./Profile";
-import Settings from "./Settings";
 import Ionicons from "@expo/vector-icons/Ionicons";
+import Home from "../screens/Home";
+import Message from "../screens/Message";
+import Profile from "../screens/Profile";
+import Settings from "../screens/Settings";
 
 const Tab = createBottomTabNavigator();
 
@@ -39,7 +39,7 @@ function MainTabNavigator() {
     >
       <Tab.Screen
         name="Messages"
-        component={HomeScreen}
+        component={Home}
         options={{
           headerTitleAlign: "left",
           headerTitleStyle: {
