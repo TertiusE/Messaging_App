@@ -12,15 +12,21 @@ import Settings from './components/Settings'
 
 const Stack = createNativeStackNavigator();
 
+var options = {
+  headerTitleAlign: 'left',
+
+}
+
 export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator>
-        <Stack.Group>
+        <Stack.Group screenOptions={options}>
           <Stack.Screen 
             name="HomeScreen"
             component={MainTabNavigator}
             options={{ headerShown: false }}
+            
           />
           <Stack.Screen 
             name="Message"
