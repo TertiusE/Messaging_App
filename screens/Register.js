@@ -50,7 +50,7 @@ const Register = ({ setUser, user, navigation }) => {
       <Text style={styles.subheader}>Create your account details</Text>
 
       <View style={styles.inputContainer}>
-        <Text style={styles.inputLabel}>Email</Text>
+        <Text style={styles.inputLabel}>Email Address</Text>
         <TextInput
           style={styles.inputText}
           placeholder="Email"

@@ -84,13 +84,11 @@ const Home = ({ user, setUser }) => {
     }
 
     navigation.setOptions({
-        headerRight: () =>   <TouchableOpacity onPress={signOut}><Ionicons style={{marginRight:10, color:"#5C4DF8"}}name="log-out-outline" size="30"/></TouchableOpacity>
+        headerRight: () =>   <TouchableOpacity onPress={signOut}><Ionicons style={{marginRight:10, color:"#5C4DF8"}}name="log-out-outline" size="34"/></TouchableOpacity>
     })
 
     return (
         <View style={styles.mainContainer}>
-
-
             <TextInput
                 style={styles.input}
                 placeholder="Search"
