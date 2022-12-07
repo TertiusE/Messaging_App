@@ -4,12 +4,17 @@ import fireApp from "../config/firebase";
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 import { connect } from "react-redux";
 import { setUser } from "../redux/actions";
+import {collection, doc, setDoc, getFirestore } from "firebase/firestore"
+import { getFunctions } from "firebase/functions"
 
 const auth = getAuth(fireApp)
+const db = getFirestore(fireApp)
+const functions = getFunctions(fireApp)
+
 
 const Register = ({setUser, user,navigation }) => {
-    const [fName, setFName] = useState("")
-    const [lName, setLName] = useState("")
+    const [fName, setFName] = useState("Tertius")
+    const [lName, setLName] = useState("Erskine")
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
     const [visibility, setVisibility] = useState(true)
@@ -23,12 +28,25 @@ const Register = ({setUser, user,navigation }) => {
             if (email !== '' && password !== ''){
                 createUserWithEmailAndPassword(auth, email, password).then((userCredential) => {
                     setUser(userCredential.user)
-                })
+                    setDoc(doc(db,'users',userCredential.user.uid), {
+                        fName:fName,
+                        lName:lName,
+                        email:email,
+                        photoUrl:"https://images.unsplash.com/photo-1670327138103-c71ef29be098?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=464&q=80",
+                        uid: userCredential.user.uid
+                    })
+                    setDoc(doc(db,'conversations',userCredential.user.uid), {
+                        messages:[]
+                    })
+                }).catch((err)=>{console.log(err)})
             }
         }catch (err){
             console.log(err)
         }
     }
+
+
+
 
     return(
         <SafeAreaView>
