@@ -31,7 +31,6 @@ const Message = () => {
           onChangeText={setText}
         />
       </View>
-   
     </KeyboardAvoidingView>
   );
 };
@@ -43,10 +42,10 @@ const styles = StyleSheet.create({
   },
   messagesSection: {
     flex: 1,
-    backgroundColor:'#F9F9F9'
+    backgroundColor: "#F9F9F9",
   },
   inputSection: {
-    flex:0.5,
+    flex: 0.5,
     width: "100%",
     flexDirection: "row",
     backgroundColor: "white",
