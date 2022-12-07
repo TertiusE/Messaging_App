@@ -12,12 +12,14 @@ import {
     Image,
     TextInput,
     TouchableHighlight,
-    Button
+    Button,
+    TouchableOpacity
 } from "react-native";
 import { useNavigation } from '@react-navigation/native';
 import "react-native-get-random-values";
 import { nanoid } from "nanoid";
 import Profile from "../assets/profile-icon.png";
+import Ionicons from "@expo/vector-icons/Ionicons";
 
 const auth = getAuth(fireApp)
 
@@ -70,6 +72,7 @@ const renderMessageItem = ({ item }) => (
 );
 
 const Home = ({ user, setUser }) => {
+    const navigation = useNavigation();
     const [text, setText] = useState("");
 
     const signOut = async () => {
@@ -80,9 +83,13 @@ const Home = ({ user, setUser }) => {
         }
     }
 
+    navigation.setOptions({
+        headerRight: () =>   <TouchableOpacity onPress={signOut}><Ionicons style={{marginRight:10, color:"#5C4DF8"}}name="log-out-outline" size="30"/></TouchableOpacity>
+    })
+
     return (
         <View style={styles.mainContainer}>
-            <Button title="LogOut" onPress={signOut} />
+
 
             <TextInput
                 style={styles.input}
