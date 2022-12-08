@@ -9,28 +9,14 @@ import {
   KeyboardAvoidingView,
   TouchableHighlight,
 } from "react-native";
+import { GiftedChat } from 'react-native-gifted-chat';
+
 
 const Message = () => {
-  const [text, setText] = useState("");
-  const inputAccessoryViewID = "uniqueID";
+
 
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-      style={styles.container}
-    >
-      <ScrollView style={styles.messagesSection}>
-        <Text>Messages</Text>
-      </ScrollView>
-      <View style={styles.inputSection}>
-        <TextInput
-          style={styles.input}
-          placeholder="Type your message"
-          value={text}
-          onChangeText={setText}
-        />
-      </View>
-    </KeyboardAvoidingView>
+    <GiftedChat />
   );
 };
 

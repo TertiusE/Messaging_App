@@ -82,7 +82,7 @@ const Profile = () => {
               style={[styles.button, styles.buttonClose]}
               onPress={() => setModalVisible(!modalVisible)}
             >
-              <Text>CLOSE</Text>
+              <Text style={{color:'white'}}>Close</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -225,11 +225,11 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     backgroundColor: "#5C4DF8",
     marginTop: 20,
-    paddingTop: 20,
-    paddingBottom: 20,
+    paddingTop: 15,
+    paddingBottom: 15,
     paddingLeft: 80,
     paddingRight: 80,
-    borderRadius: 30,
+    borderRadius: 20,
     shadowColor: "#9F9F9F",
     shadowOffset: {
       width: 2,
