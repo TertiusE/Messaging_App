@@ -1,61 +1,35 @@
-import { useState, useContext } from "react";
+import { useState, useEffect } from "react";
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 import fireApp from "../config/firebase";
 import { setUser } from "../redux/actions";
 import { connect } from "react-redux";
-import {
-    View,
-    Text,
-    ScrollView,
-    FlatList,
-    StyleSheet,
-    Image,
-    TextInput,
-    TouchableHighlight,
-    Button
-} from "react-native";
+import { View, Text, SafeAreaView, FlatList, StyleSheet, Image, TextInput, TouchableHighlight, Button, Modal } from "react-native";
 import { useNavigation } from '@react-navigation/native';
 import "react-native-get-random-values";
-import { nanoid } from "nanoid";
 import Profile from "../assets/profile-icon.png";
+import { onSnapshot,collection, query, where, doc, orderBy, limit, getDoc, getFirestore, getDocs, updateDoc, arrayUnion } from "firebase/firestore";
+
 
 const auth = getAuth(fireApp)
+const db = getFirestore(fireApp)
 
 /* Sample Data */
-const DATA = [
-    {
-        id: nanoid(),
-        name: "Jeremy",
-        time: "12:30pm",
-        message: "This is a sample message...",
-    },
-    {
-        id: nanoid(),
-        name: "Catilyn",
-        time: "3:30pm",
-        message: "This is a sample message...",
-    },
-    {
-        id: nanoid(),
-        name: "Sam",
-        time: "6:05pm",
-        message: "This is a sample message...",
-    },
-];
 
-function MessageItem({ name, time, message }) {
+
+function MessageItem({ fName, uid, lName, time, message, otherUser }) {
     const navigation = useNavigation();
     return (
         <TouchableHighlight
             onPress={() => navigation.navigate('Message', {
-                recievingUser: name
+                recievingUser: `${fName} ${lName}`,
+                otherUser: otherUser
             })}
         >
             <View style={styles.itemContainer}>
                 <Image style={{ height: 60, width: 60 }} source={Profile} />
                 <View style={styles.itemSection}>
                     <View style={styles.itemHeader}>
-                        <Text style={styles.itemName}>{name}</Text>
+                        <Text style={styles.itemName}>{fName} {lName}</Text>
                         <Text style={styles.itemTime}>{time}</Text>
                     </View>
                     <Text style={styles.itemMessage}>{message}</Text>
@@ -66,11 +40,126 @@ function MessageItem({ name, time, message }) {
 }
 
 const renderMessageItem = ({ item }) => (
-    <MessageItem name={item.name} time={item.time} message={item.message} />
+    <MessageItem fName={item.fName} lName={item.lName} time="3:28pm" message="Random Message" otherUser={item} />
 );
+
 
 const Home = ({ user, setUser }) => {
     const [text, setText] = useState("");
+    const [showModal, setModal] = useState(false)
+    let [currentUser, setCurrent] = useState({})
+
+    useEffect(() => {
+        const fetchData = async () => {
+            const userRef = onSnapshot(doc(db, "users", user.uid),(doc)=>{setCurrent(doc.data())});
+        }
+        fetchData()
+            .catch(console.error);
+    }, [])
+
+    const FullView = () => {
+        const [modalText, setModalText] = useState("")
+        const [modalData, setModalData] = useState([])
+
+        useEffect(() => {
+            const fetchData = async () => {
+                let newData = []
+                let usersRef = collection(db, "users")
+                const q = query(usersRef, orderBy("lName"), limit(5))
+                const allUsers = await getDocs(q);
+                allUsers.forEach((doc) => {
+                    newData.push(doc.data())
+                })
+                setModalData(newData)
+            }
+
+            fetchData().catch((err) => console.log(err));
+        }, [])
+
+        let searchUsers = async () => {
+            let newData = []
+            let usersRef = collection(db, "users")
+            const first = query(usersRef, where("fName", ">=", modalText), where("fName", "<=", modalText))
+            const last = query(usersRef, where("lName", ">=", modalText), where("lName", "<=", modalText))
+            const email = query(usersRef, where("email", ">=", modalText), where("email", "<=", modalText))
+            const allFirst = await getDocs(first)
+            const allLast = await getDocs(last)
+            const allEmails = await getDocs(email)
+
+            allFirst.forEach((doc) => {
+                newData.push(doc.data())
+            })
+            allLast.forEach((doc) => {
+                newData.push(doc.data())
+            })
+            allEmails.forEach((doc) => {
+                newData.push(doc.data())
+            })
+            setModalData(newData)
+        }
+
+        const addToHome = async (otherUser) => {
+            if (!currentUser.conversations.includes(otherUser)) {
+                const userRef = doc(db, "users", currentUser.uid)
+                const userUnion = await updateDoc(userRef, {
+                    conversations: arrayUnion(otherUser)
+                })
+            }
+            if (!otherUser.conversations.includes(currentUser)) {
+                const otherRef = doc(db, "users", otherUser.uid)
+                const otherUnion = await updateDoc(otherRef, {
+                    conversations: arrayUnion(currentUser)
+                })
+            }
+        }
+
+        function ModalItem({ fName, otherUser, lName, time, message }) {
+            const navigation = useNavigation();
+            return (
+                <TouchableHighlight
+                    onPress={() => {
+                        addToHome(otherUser).catch(err=>console.log(err))
+                        navigation.navigate('Message', { recievingUser: `${fName} ${lName}`, otherUser: otherUser })
+                        setModal(!showModal)
+                    }}
+                >
+                    <View style={styles.itemContainer}>
+                        <Image style={{ height: 60, width: 60 }} source={Profile} />
+                        <View style={styles.itemSection}>
+                            <View style={styles.itemHeader}>
+                                <Text style={styles.itemName}>{fName} {lName}</Text>
+                            </View>
+                        </View>
+                    </View>
+                </TouchableHighlight>
+            );
+        }
+
+        const renderModalItem = ({ item }) => (
+            <ModalItem fName={item.fName} lName={item.lName} otherUser={item} />
+        );
+
+        return (
+            <Modal animationType='slide' transparent={false} visible={showModal} >
+                <SafeAreaView>
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Search"
+                        value={modalText}
+                        onChangeText={setModalText}
+                    />
+                    <Button title="Search" onPress={() => { searchUsers() }} />
+                    <FlatList
+                        data={modalData}
+                        renderItem={renderModalItem}
+                        keyExtractor={(item) => item.uid}
+                    />
+                    <Button title="Close" onPress={() => { setModal(!showModal) }} />
+
+                </SafeAreaView>
+            </Modal>
+        )
+    }
 
     const signOut = async () => {
         try {
@@ -91,10 +180,12 @@ const Home = ({ user, setUser }) => {
                 onChangeText={setText}
             />
             <FlatList
-                data={DATA}
+                data={currentUser.conversations}
                 renderItem={renderMessageItem}
-                keyExtractor={(item) => item.id}
+                keyExtractor={(item) => item.uid}
             />
+            <FullView />
+            <Button title="Add" onPress={() => { setModal(!showModal) }} />
         </View>
     )
 }

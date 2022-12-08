@@ -7,6 +7,7 @@ import Message from "../screens/Message";
 import Profile from "../screens/Profile";
 import Settings from "../screens/Settings";
 
+
 const Tab = createBottomTabNavigator();
 
 const screenOptions = (route, color) => {
@@ -48,7 +49,6 @@ function MainTabNavigator() {
           },
         }}
       />
-      <Tab.Screen name="Chat" component={Message} />
       <Tab.Screen name="Profile" component={Profile} />
       <Tab.Screen
         name="Settings"
