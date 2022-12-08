@@ -19,7 +19,7 @@ const Message = ({ user, route }) => {
       let allMessages = []
       const userRef = onSnapshot(doc(db, "conversations", user.uid), (doc) => {
         doc.data().messages.forEach(element => {
-          if (element.sent_to == otherUser.uid) {
+          if ((element.sent_to == user.uid && element.sent_by == otherUser.uid) || (element.sent_to == otherUser.uid && element.sent_by == user.uid)) {
             allMessages.push(element)
           }
         })
