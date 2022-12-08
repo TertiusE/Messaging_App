@@ -1,18 +1,45 @@
 import { React, useState } from "react";
-import {
-  Text,
-  View,
-  StyleSheet,
-  InputAccessoryView,
-  TextInput,
-  ScrollView,
-  KeyboardAvoidingView,
-  TouchableHighlight,
-} from "react-native";
+import {Text, View, StyleSheet,TextInput,ScrollView,KeyboardAvoidingView,Button} from "react-native";
+import {collection, doc, setDoc, getFirestore, serverTimestamp, updateDoc, arrayUnion } from "firebase/firestore"
+import { connect } from "react-redux";
+import { setUser } from "../redux/actions";
+import { nanoid } from "nanoid";
+import fireApp from "../config/firebase";
 
-const Message = () => {
+
+const db = getFirestore(fireApp)
+
+const Message = ({user, route}) => {
   const [text, setText] = useState("");
-  const inputAccessoryViewID = "uniqueID";
+  const { otherUser } = route.params
+
+
+  let sendMessage = async () => {
+    const current_time = new Date()
+    const userRef = doc(db,"conversations",user.uid);
+    const userUnion = await updateDoc(userRef, {
+      messages: arrayUnion({
+        id : nanoid(),
+        sent_by : user.uid,
+        sent_to : otherUser.uid,
+        sent_at : current_time,
+        text: text
+      })
+    });
+
+    const otherRef = doc(db,"conversations",otherUser.uid);
+    const unionRes = await updateDoc(otherRef, {
+      messages: arrayUnion({
+        id : nanoid(),
+        sent_by : user.uid,
+        sent_to : otherUser.uid,
+        sent_at : current_time,
+        text: text
+      })
+    });
+    setText("")
+
+  }
 
   return (
     <KeyboardAvoidingView
@@ -29,6 +56,7 @@ const Message = () => {
           value={text}
           onChangeText={setText}
         />
+        <Button title="Send" onPress={sendMessage}/>
       </View>
    
     </KeyboardAvoidingView>
@@ -62,4 +90,8 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Message;
+const mapDispatch = {setUser};
+const mapState = (store) => ({
+    user: store.dataReducer.user,
+});
+export default connect(mapState, mapDispatch)(Message);

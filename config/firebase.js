@@ -11,6 +11,5 @@ const firebase_config = {
   appId: Constants.manifest.extra.appId
 };
 
-console.log(firebase_config)
 const fireApp = initializeApp(firebase_config);
 export default fireApp;
