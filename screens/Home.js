@@ -6,7 +6,6 @@ import { connect } from "react-redux";
 import { View, Text, SafeAreaView, FlatList, StyleSheet, Image, TextInput, TouchableHighlight, Button, Modal } from "react-native";
 import { useNavigation } from '@react-navigation/native';
 import "react-native-get-random-values";
-import { nanoid } from "nanoid";
 import Profile from "../assets/profile-icon.png";
 import { onSnapshot,collection, query, where, doc, orderBy, limit, getDoc, getFirestore, getDocs, updateDoc, arrayUnion } from "firebase/firestore";
 
@@ -52,9 +51,7 @@ const Home = ({ user, setUser }) => {
 
     useEffect(() => {
         const fetchData = async () => {
-            const userRef = doc(db, "users", user.uid);
-            let docSnap = await getDoc(userRef)
-            setCurrent(docSnap.data())
+            const userRef = onSnapshot(doc(db, "users", user.uid),(doc)=>{setCurrent(doc.data())});
         }
         fetchData()
             .catch(console.error);
@@ -104,14 +101,12 @@ const Home = ({ user, setUser }) => {
         const addToHome = async (otherUser) => {
             if (!currentUser.conversations.includes(otherUser)) {
                 const userRef = doc(db, "users", currentUser.uid)
-                console.log(otherUser)
                 const userUnion = await updateDoc(userRef, {
                     conversations: arrayUnion(otherUser)
                 })
             }
             if (!otherUser.conversations.includes(currentUser)) {
                 const otherRef = doc(db, "users", otherUser.uid)
-                console.log(currentUser)
                 const otherUnion = await updateDoc(otherRef, {
                     conversations: arrayUnion(currentUser)
                 })
