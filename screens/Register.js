@@ -1,87 +1,107 @@
 import { useState } from "react";
-import {
-  StyleSheet,
-  SafeAreaView,
-  Text,
-  View,
-  TextInput,
-  Button,
-  Image,
-  TouchableOpacity,
-} from "react-native";
+import { StyleSheet, SafeAreaView, Text, View, TextInput, Button, TouchableOpacity } from "react-native";
 import fireApp from "../config/firebase";
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 import { connect } from "react-redux";
 import { setUser } from "../redux/actions";
-import Logo from "../assets/appicon.png";
+import { collection, doc, setDoc, getFirestore, serverTimestamp } from "firebase/firestore"
 import styles from "../stylesheets/login.component";
+import { getFunctions } from "firebase/functions"
 
-const auth = getAuth(fireApp);
+const auth = getAuth(fireApp)
+const db = getFirestore(fireApp)
+
 
 const Register = ({ setUser, user, navigation }) => {
-  const [fName, setFName] = useState("");
-  const [lName, setLName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [visibility, setVisibility] = useState(true);
+    const [fName, setFName] = useState("")
+    const [lName, setLName] = useState("")
+    const [email, setEmail] = useState("")
+    const [password, setPassword] = useState("")
+    const [visibility, setVisibility] = useState(true)
 
-  const toggleVisibility = () => {
-    setVisibility(!visibility);
-  };
-
-  const onRegister = async () => {
-    try {
-      if (email !== "" && password !== "") {
-        createUserWithEmailAndPassword(auth, email, password).then(
-          (userCredential) => {
-            setUser(userCredential.user);
-          }
-        );
-      }
-    } catch (err) {
-      console.log(err);
+    const toggleVisibility = () => {
+        setVisibility(!visibility)
     }
-  };
 
-  return (
-    <SafeAreaView style={styles.mainContainer}>
-      <Image style={styles.logo} source={Logo} />
-      <Text style={styles.header}>Register to Begin</Text>
-      <Text style={styles.subheader}>Create your account details</Text>
+    const onRegister = async () => {
+        try {
+            if (email !== '' && password !== '') {
+                createUserWithEmailAndPassword(auth, email, password).then((userCredential) => {
+                    setUser(userCredential.user)
+                    setDoc(doc(db, 'users', userCredential.user.uid), {
+                        uid: userCredential.user.uid,
+                        fName: fName,
+                        lName: lName,
+                        email: email,
+                        photoUrl: "https://images.unsplash.com/photo-1670327138103-c71ef29be098?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=464&q=80",
+                        conversations: [],
+                        accentColour: 'indigo',
+                        systemFont: null,
+                    })
+                    setDoc(doc(db, 'conversations', userCredential.user.uid), {
+                        messages: []
+                    })
+                }).catch((err) => { console.log(err) })
+            }
+        } catch (err) {
+            console.log(err)
+        }
+    }
 
-      <View style={styles.inputContainer}>
-        <Text style={styles.inputLabel}>Email Address</Text>
-        <TextInput
-          style={styles.inputText}
-          placeholder="Email"
-          value={email}
-          onChangeText={setEmail}
-        />
+    return (
+        <SafeAreaView style={styles.mainContainer}>
+            <Text style={styles.header}>Register to Begin</Text>
+            <Text style={styles.subheader}>Create your account details</Text>
 
-        <Text style={styles.inputLabel}>Password</Text>
-        <TextInput
-          style={styles.inputText}
-          placeholder="Password"
-          value={password}
-          onChangeText={setPassword}
-        />
-      </View>
+            <View style={styles.inputContainer}>
+                <Text style={styles.inputLabel}>First Name</Text>
+                <TextInput
+                    style={styles.inputText}
+                    placeholder="First Name"
+                    value={fName}
+                    onChangeText={setFName}
+                />
 
-      <TouchableOpacity style={[styles.loginButton, {backgroundColor:'#919CFF'}]} onPress={onRegister}>
-        <Text style={styles.loginText}>Register</Text>
-      </TouchableOpacity>
-      <Button
-        onPress={() => navigation.navigate("Login")}
-        title="Login"
-        color="grey"
-      />
-    </SafeAreaView>
-  );
+                <Text style={styles.inputLabel}>Last Name</Text>
+                <TextInput
+                    style={styles.inputText}
+                    placeholder="Last Name"
+                    value={lName}
+                    onChangeText={setLName}
+                />
+
+                <Text style={styles.inputLabel}>Email Address</Text>
+                <TextInput
+                    style={styles.inputText}
+                    placeholder="Email"
+                    value={email}
+                    onChangeText={setEmail}
+                />
+
+                <Text style={styles.inputLabel}>Password</Text>
+                <TextInput
+                    style={styles.inputText}
+                    placeholder="Password"
+                    value={password}
+                    onChangeText={setPassword}
+                />
+            </View>
+
+            <TouchableOpacity style={[styles.loginButton, { backgroundColor: '#919CFF' }]} onPress={onRegister}>
+                <Text style={styles.loginText}>Register</Text>
+            </TouchableOpacity>
+            <Button
+                onPress={() => navigation.navigate("Login")}
+                title="Login"
+                color="grey"
+            />
+        </SafeAreaView>
+    );
 };
 
 const mapDispatch = { setUser };
 const mapState = (store) => ({
-  user: store.dataReducer.user,
+    user: store.dataReducer.user,
 });
 
 export default connect(mapState, mapDispatch)(Register);

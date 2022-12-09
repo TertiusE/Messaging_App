@@ -1,13 +1,13 @@
 import { useState, useEffect } from "react";
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 import fireApp from "../config/firebase";
-import { setUser } from "../redux/actions";
+import { setUser, setAccentColour, setSystemFont, setLoading } from "../redux/actions";
 import { connect } from "react-redux";
 import { View, Text, SafeAreaView, FlatList, StyleSheet, Image, TextInput, TouchableHighlight, Button, Modal } from "react-native";
 import { useNavigation } from '@react-navigation/native';
 import "react-native-get-random-values";
 import Profile from "../assets/profile-icon.png";
-import { onSnapshot,collection, query, where, doc, orderBy, limit, getDoc, getFirestore, getDocs, updateDoc, arrayUnion } from "firebase/firestore";
+import { onSnapshot, collection, query, where, doc, orderBy, limit, getDoc, getFirestore, getDocs, updateDoc, arrayUnion } from "firebase/firestore";
 
 const auth = getAuth(fireApp)
 const db = getFirestore(fireApp)
@@ -18,12 +18,10 @@ const db = getFirestore(fireApp)
 function MessageItem({ fName, lName, time, message, otherUser }) {
     const navigation = useNavigation();
     return (
-        <TouchableHighlight
-            onPress={() => navigation.navigate('Message', {
-                recievingUser: `${fName} ${lName}`,
-                otherUser: otherUser
-            })}
-        >
+        <TouchableHighlight onPress={() => navigation.navigate('Message', {
+            recievingUser: `${fName} ${lName}`,
+            otherUser: otherUser
+        })}>
             <View style={styles.itemContainer}>
                 <Image style={{ height: 60, width: 60 }} source={Profile} />
                 <View style={styles.itemSection}>
@@ -50,7 +48,12 @@ const Home = ({ user, setUser }) => {
 
     useEffect(() => {
         const fetchData = async () => {
-            const userRef = onSnapshot(doc(db, "users", user.uid),(doc)=>{setCurrent(doc.data())});
+            const userRef = onSnapshot(doc(db, "users", user.uid), (doc) => {
+                setCurrent(doc.data())
+                setUser(doc.data())
+                setAccentColour(doc.data().accentColour)
+                setSystemFont(doc.data().systemFont)
+            });
         }
         fetchData()
             .catch(console.error);
@@ -117,7 +120,7 @@ const Home = ({ user, setUser }) => {
             return (
                 <TouchableHighlight
                     onPress={() => {
-                        addToHome(otherUser).catch(err=>console.log(err))
+                        addToHome(otherUser).catch(err => console.log(err))
                         navigation.navigate('Message', { recievingUser: `${fName} ${lName}`, otherUser: otherUser })
                         setModal(!showModal)
                     }}
@@ -235,9 +238,12 @@ const styles = StyleSheet.create({
     },
 });
 
-const mapDispatch = { setUser };
+const mapDispatch = { setUser, setAccentColour, setSystemFont, setLoading };
 const mapState = (store) => ({
     user: store.dataReducer.user,
+    accentColour: store.dataReducer.accentColour,
+    systemFont: store.dataReducer.systemFont,
+    isLoading: store.dataReducer.isLoading
 });
 
 export default connect(mapState, mapDispatch)(Home);

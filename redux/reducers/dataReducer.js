@@ -8,6 +8,7 @@ const initialState = {
     systemFont: null
 }
 
+
 export default function(state = initialState, action) {
     if (UPDATE_USER == action.type) {
         return { ...state, user: action.payload}

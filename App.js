@@ -6,7 +6,6 @@ import HandleNav from "./navigation/HandleNav";
 
 
 export default function App() {
-
   return (
     <Provider store={store}>
       <HandleNav />

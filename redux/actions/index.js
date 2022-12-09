@@ -15,7 +15,7 @@ export const setLoading = (i) => {
     }
 }
 
-export const setFont = (i) => {
+export const setSystemFont = (i) => {
     return {
     type: UPDATE_FONT,
     payload:  i

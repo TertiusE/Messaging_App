@@ -8,11 +8,8 @@ import {
   Button,
   View,
   TextInput,
-  KeyboardAvoidingView,
-  ScrollView,
   TouchableOpacity,
-  Modal,
-  Pressable,
+  Modal
 } from "react-native";
 import ProfileImg from "../assets/profile-icon.png";
 
@@ -52,7 +49,6 @@ const Profile = () => {
     }
 
     console.log(userChanges);
-
     setfName("");
     setlName("");
     setbDay("");
@@ -83,7 +79,7 @@ const Profile = () => {
               style={[styles.button, styles.buttonClose]}
               onPress={() => setModalVisible(!modalVisible)}
             >
-              <Text style={{color:'white'}}>Close</Text>
+              <Text style={{ color: 'white' }}>Close</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -95,8 +91,8 @@ const Profile = () => {
           profileImg
             ? { uri: `${profileImg}` }
             : {
-                uri: "https://s3-eu-west-1.amazonaws.com/artsthread-content/images/users/68ebb7a3c21864ae50b17a28b4866a94.jpg",
-              }
+              uri: "https://s3-eu-west-1.amazonaws.com/artsthread-content/images/users/68ebb7a3c21864ae50b17a28b4866a94.jpg",
+            }
         }
       />
 
@@ -112,7 +108,7 @@ const Profile = () => {
         onPress={() => setModalVisible(true)}
         title="Change photo"
         color="#A5ADF9"
-      ></Button>
+      />
 
       <View style={styles.inputContainer}>
         <Text style={styles.inputLabel}>First Name</Text>
@@ -142,7 +138,7 @@ const Profile = () => {
             />
             <TextInput
               style={[styles.inputText, styles.inputBDate]}
-              placeholder="MMM"
+              placeholder="MM"
               value={bMonth}
               onChangeText={setbMonth}
             />
@@ -222,7 +218,7 @@ const styles = StyleSheet.create({
     margin: 5,
   },
   saveButton: {
-    width: "90%",
+    width: "100%",
     alignSelf: "center",
     backgroundColor: "#5C4DF8",
     marginTop: 20,
@@ -243,6 +239,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "600",
     shadowColor: "grey",
+    textAlign: "center"
   },
   centeredView: {
     flex: 1,
@@ -267,17 +264,17 @@ const styles = StyleSheet.create({
   },
   button: {
     borderRadius: 30,
-    padding:15,
+    padding: 15,
     paddingLeft: 25,
     paddingRight: 25,
     elevation: 2,
-    color:'white',
+    color: 'white',
   },
   buttonClose: {
-    marginTop:15,
+    marginTop: 15,
     backgroundColor: "#A5ADF9",
-    color:'white',
-    fontSize:20,
+    color: 'white',
+    fontSize: 20,
   },
   textStyle: {
     color: "white",
@@ -287,8 +284,8 @@ const styles = StyleSheet.create({
   modalText: {
     marginBottom: 15,
     textAlign: "center",
-    fontSize:20,
-    fontWeight:'700'
+    fontSize: 20,
+    fontWeight: '700'
   },
 });
 
