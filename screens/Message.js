@@ -3,7 +3,7 @@ import { Text, View, StyleSheet, TextInput, ScrollView, KeyboardAvoidingView, Bu
 import { onSnapshot, doc, getFirestore, updateDoc, arrayUnion } from "firebase/firestore"
 import { setAccentColour, setLoading, setUser, setSystemFont } from "../redux/actions";
 import { connect } from "react-redux";
-import { nanoid } from "nanoid";
+import uuid from 'react-native-uuid';
 import fireApp from "../config/firebase";
 
 
@@ -31,11 +31,13 @@ const Message = ({ user, accentColour, systemFont, route }) => {
   }, [])
 
   let sendMessage = async () => {
+    console.log(user.uid)
+    console.log(otherUser.uid)
     const current_time = new Date()
     const userRef = doc(db, "conversations", user.uid);
     const userUnion = await updateDoc(userRef, {
       messages: arrayUnion({
-        id: nanoid(),
+        id: uuid.v4(),
         sent_by: user.uid,
         sent_to: otherUser.uid,
         sent_at: current_time,
@@ -46,7 +48,7 @@ const Message = ({ user, accentColour, systemFont, route }) => {
     const otherRef = doc(db, "conversations", otherUser.uid);
     const unionRes = await updateDoc(otherRef, {
       messages: arrayUnion({
-        id: nanoid(),
+        id: uuid.v4(),
         sent_by: user.uid,
         sent_to: otherUser.uid,
         sent_at: current_time,
@@ -54,6 +56,7 @@ const Message = ({ user, accentColour, systemFont, route }) => {
       })
     });
     setText("")
+
   }
 
   return (

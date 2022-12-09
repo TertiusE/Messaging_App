@@ -6,6 +6,7 @@ import { connect } from "react-redux";
 import { View, Text, SafeAreaView, FlatList, StyleSheet, Image, TextInput, TouchableHighlight, Button, Modal } from "react-native";
 import { useNavigation } from '@react-navigation/native';
 import { onSnapshot, collection, query, where, doc, orderBy, limit, getFirestore, getDocs, updateDoc, arrayUnion } from "firebase/firestore";
+import Profile from "../assets/profile-icon.png";
 
 const auth = getAuth(fireApp)
 const db = getFirestore(fireApp)
