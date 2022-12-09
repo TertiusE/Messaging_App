@@ -81,7 +81,7 @@ const Settings = () => {
         <Text style={styles.sectionText}>Font</Text>
       </View>
       <View style={styles.sectionContent}>
-        <Text style={styles.sectionText}>
+        <Text style={[styles.sectionText, {fontFamily:font}]}>
           {isEnabled ? "Dark Mode" : "Light Mode"}
         </Text>
         <Switch
@@ -105,7 +105,7 @@ const Settings = () => {
           />
         ))}
       </View>
-      {/* <Picker
+      <Picker
         selectedValue={font}
         onValueChange={(value) => {
           setFont(value);
@@ -113,10 +113,12 @@ const Settings = () => {
       >
         <Picker.Item label="Caveat" value="Caveat" />
         <Picker.Item label="Roboto" value="Roboto" />
+        <Picker.Item label="Roboto Slab" value="RobotoSlab" />
+        <Picker.Item label="Poppins" value="Poppins" />
       </Picker>
       <View>
         <Text>{font}</Text>
-      </View> */}
+      </View>
     </View>
   );
 };
