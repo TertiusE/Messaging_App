@@ -63,9 +63,10 @@ const Message = ({ user, accentColour, systemFont, route }) => {
   useEffect(() => {
     setTestMessages([
       {
-        _id: 'exgL7EuKk4Wx1jKF1f8XSWPxQ6g1', // sender 
-        text: 'Hello developer',
+        _id: 1, // sender 
+        sent_by: '',
         createdAt: new Date(),
+        text:'hello',
         user: {
           _id: 'QT3zmmAuw7ZYbURLCzUqTtEYah73', // reciever
           name: 'React Native',
@@ -77,33 +78,16 @@ const Message = ({ user, accentColour, systemFont, route }) => {
   
   const onSend = useCallback((testmessage = []) => {
     sendMessage()
+    setTestMessages(previousMessages => GiftedChat.append(previousMessages, testmessage))
+    console.log(testmessage)
   })
 
   function handMessageClick(textVal) {
     setText(textVal)
-    console.log(text)
   }
 
 
   return (
-    // <KeyboardAvoidingView
-    //   behavior={Platform.OS === "ios" ? "padding" : "height"}
-    //   style={styles.container}
-    // >
-    //   <ScrollView style={styles.messagesSection}>
-    //     <Text>Messages</Text>
-    //     <Text>{JSON.stringify(messages)}</Text>
-    //   </ScrollView>
-    //   <View style={styles.inputSection}>
-    //     <TextInput
-    //       style={styles.input}
-    //       placeholder="Type your message"
-    //       value={text}
-    //       onChangeText={setText}
-    //     />
-    //     <Button title="Send" onPress={sendMessage} />
-    //   </View>
-    // </KeyboardAvoidingView>
     <GiftedChat 
       messages={testMessages}
       onInputTextChanged={(text) => handMessageClick(text)}
