@@ -26,6 +26,13 @@ const colourOptions = {
   Indigo: "#5C4DF8",
 };
 
+const fonts = [
+  { label: 'Caveat', value: 'Caveat' },
+  { label: 'Roboto', value: 'Roboto' },
+  { label: 'Roboto Slab', value: 'RobotoSlab' },
+  { label: 'Poppins', value: 'Poppins' },
+  { label: 'Default', value: null }
+]
 
 const ColorCircle = ({ color, handleClick, colorThemeSelected }) => {
   return (
@@ -56,14 +63,6 @@ const Settings = ({ user, isLoading, accentColour, systemFont, setLoading, setAc
   const [colorTheme, setColorTheme] = useState(user.accentColour);
   const [font, setFont] = useState(null);
   const [fontOpen, setFontOpen] = useState(false);
-
-  const fonts = [
-    { label: 'Caveat', value: 'Caveat' },
-    { label: 'Roboto', value: 'Roboto' },
-    { label: 'RobotoSlab', value: 'RobotoSlab' },
-    { label: 'Poppins', value: 'Poppins' },
-    { label: 'Default', value: null }
-  ]
 
   let updateSettings = async () => {
     const userRef = doc(db, "users", user.uid);
