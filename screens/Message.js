@@ -77,14 +77,11 @@ const Message = ({ user, accentColour, systemFont, route }) => {
   
   const onSend = useCallback((testmessage = []) => {
     sendMessage()
+  })
 
-    // setTestMessages(previousMessages => GiftedChat.append(previousMessages, testmessage))
-  }, [])
-
-  const handMessageClick = (message) => {
-    setText(message)
+  function handMessageClick(textVal) {
+    setText(textVal)
     console.log(text)
-    onSend(message)
   }
 
 
@@ -109,7 +106,8 @@ const Message = ({ user, accentColour, systemFont, route }) => {
     // </KeyboardAvoidingView>
     <GiftedChat 
       messages={testMessages}
-      onSend={(message) => handMessageClick(message)}
+      onInputTextChanged={(text) => handMessageClick(text)}
+      onSend={(message) => onSend(message)}
       user={{
         _id:1,
       }}
