@@ -3,10 +3,11 @@ import { getAuth} from "firebase/auth";
 import fireApp from "../config/firebase";
 import { setUser, setAccentColour, setSystemFont, setLoading } from "../redux/actions";
 import { connect } from "react-redux";
-import { View, Text, SafeAreaView, FlatList, StyleSheet, Image, TextInput, TouchableHighlight, Button, Modal } from "react-native";
+import { View, Text, SafeAreaView, FlatList, StyleSheet, Image, TextInput, TouchableHighlight, TouchableOpacity, Button, Modal } from "react-native";
 import { useNavigation } from '@react-navigation/native';
 import { onSnapshot, collection, query, where, doc, orderBy, limit, getFirestore, getDocs, updateDoc, arrayUnion } from "firebase/firestore";
 import Profile from "../assets/profile-icon.png";
+import { Ionicons } from '@expo/vector-icons';
 
 const auth = getAuth(fireApp)
 const db = getFirestore(fireApp)
@@ -38,9 +39,14 @@ const renderMessageItem = ({ item }) => (
 
 
 const Home = ({ user, setUser, setAccentColour, setSystemFont }) => {
+    const navigation = useNavigation();
     const [text, setText] = useState("");
     const [showModal, setModal] = useState(false)
     let [currentUser, setCurrent] = useState({})
+
+    navigation.setOptions({
+        headerRight: () =>   <TouchableOpacity onPress={signOut}><Ionicons style={{marginRight:10, color:"#5C4DF8"}}name="log-out-outline" size="34"/></TouchableOpacity>
+    })
 
     useEffect(() => {
         const fetchData = async () => {
@@ -169,8 +175,6 @@ const Home = ({ user, setUser, setAccentColour, setSystemFont }) => {
 
     return (
         <View style={styles.mainContainer}>
-            <Button title="LogOut" onPress={signOut} />
-
             <TextInput
                 style={styles.input}
                 placeholder="Search"
