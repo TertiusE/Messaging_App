@@ -1,11 +1,11 @@
-import { React, useState, useEffect } from "react";
+import { React, useState, useEffect, useCallback } from "react";
 import { Text, View, StyleSheet, TextInput, ScrollView, KeyboardAvoidingView, Button, Platform } from "react-native";
 import { onSnapshot, doc, getFirestore, updateDoc, arrayUnion } from "firebase/firestore"
 import { setAccentColour, setLoading, setUser, setSystemFont } from "../redux/actions";
 import { connect } from "react-redux";
 import uuid from 'react-native-uuid';
 import fireApp from "../config/firebase";
-
+import { GiftedChat } from 'react-native-gifted-chat';
 
 const db = getFirestore(fireApp)
 
@@ -56,28 +56,64 @@ const Message = ({ user, accentColour, systemFont, route }) => {
       })
     });
     setText("")
-
   }
 
+  const [testMessages, setTestMessages] = useState([]);
+
+  useEffect(() => {
+    setTestMessages([
+      {
+        _id: 'exgL7EuKk4Wx1jKF1f8XSWPxQ6g1', // sender 
+        text: 'Hello developer',
+        createdAt: new Date(),
+        user: {
+          _id: 'QT3zmmAuw7ZYbURLCzUqTtEYah73', // reciever
+          name: 'React Native',
+          avatar: 'https://placeimg.com/140/140/any',
+        },
+      },
+    ])
+  }, [])
+  
+  const onSend = useCallback((testmessage = []) => {
+    sendMessage()
+
+    // setTestMessages(previousMessages => GiftedChat.append(previousMessages, testmessage))
+  }, [])
+
+  const handMessageClick = (message) => {
+    setText(message)
+    console.log(text)
+    onSend(message)
+  }
+
+
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-      style={styles.container}
-    >
-      <ScrollView style={styles.messagesSection}>
-        <Text>Messages</Text>
-        <Text>{JSON.stringify(messages)}</Text>
-      </ScrollView>
-      <View style={styles.inputSection}>
-        <TextInput
-          style={styles.input}
-          placeholder="Type your message"
-          value={text}
-          onChangeText={setText}
-        />
-        <Button title="Send" onPress={sendMessage} />
-      </View>
-    </KeyboardAvoidingView>
+    // <KeyboardAvoidingView
+    //   behavior={Platform.OS === "ios" ? "padding" : "height"}
+    //   style={styles.container}
+    // >
+    //   <ScrollView style={styles.messagesSection}>
+    //     <Text>Messages</Text>
+    //     <Text>{JSON.stringify(messages)}</Text>
+    //   </ScrollView>
+    //   <View style={styles.inputSection}>
+    //     <TextInput
+    //       style={styles.input}
+    //       placeholder="Type your message"
+    //       value={text}
+    //       onChangeText={setText}
+    //     />
+    //     <Button title="Send" onPress={sendMessage} />
+    //   </View>
+    // </KeyboardAvoidingView>
+    <GiftedChat 
+      messages={testMessages}
+      onSend={(message) => handMessageClick(message)}
+      user={{
+        _id:1,
+      }}
+    />
   );
 };
 
