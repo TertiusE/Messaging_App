@@ -1,25 +1,16 @@
 import { useState } from "react";
 import React from "react";
-import {
-  StyleSheet,
-  SafeAreaView,
-  Text,
-  TextInput,
-  Button,
-  Image,
-  View,
-  TouchableOpacity,
-} from "react-native";
+import {SafeAreaView,Text,TextInput,Button,Image,View,TouchableOpacity} from "react-native";
 import fireApp from "../config/firebase";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import { connect } from "react-redux";
-import { setUser } from "../redux/actions";
+import { setAccentColour, setLoading, setUser, setSystemFont } from "../redux/actions";
 import Logo from "../assets/appicon.png";
 import styles from '../stylesheets/login.component'
 
 const auth = getAuth(fireApp);
 
-const Login = ({ navigation, user, setUser }) => {
+const Login = ({setUser, navigation, user  }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [visibility, setVisibility] = useState(true);
@@ -80,9 +71,13 @@ const Login = ({ navigation, user, setUser }) => {
   );
 };
 
-const mapDispatch = { setUser };
+
+const mapDispatch = { setUser, setAccentColour, setSystemFont, setLoading };
 const mapState = (store) => ({
-  user: store.dataReducer.user,
+    user: store.dataReducer.user,
+    accentColour: store.dataReducer.accentColour,
+    systemFont: store.dataReducer.systemFont,
+    isLoading: store.dataReducer.isLoading
 });
 
 export default connect(mapState, mapDispatch)(Login);

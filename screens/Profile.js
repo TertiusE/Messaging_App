@@ -1,19 +1,10 @@
-import React from "react";
 import { useState } from "react";
-import {
-  SafeAreaView,
-  Text,
-  StyleSheet,
-  Image,
-  Button,
-  View,
-  TextInput,
-  TouchableOpacity,
-  Modal
-} from "react-native";
-import ProfileImg from "../assets/profile-icon.png";
+import {SafeAreaView,Text,StyleSheet,Image,Button,View,TextInput,TouchableOpacity, Modal} from "react-native";
+import { setAccentColour, setLoading, setUser, setSystemFont } from "../redux/actions";
+import { connect } from "react-redux";
 
-const Profile = () => {
+
+const Profile = ({ setUser, setAccentColour, setSystemFont, setLoading }) => {
   const [fName, setfName] = useState("");
   const [lName, setlName] = useState("");
   const [bDay, setbDay] = useState("");
@@ -289,4 +280,14 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Profile;
+
+const mapDispatch = { setUser, setAccentColour, setSystemFont, setLoading };
+const mapState = (store) => ({
+    user: store.dataReducer.user,
+    accentColour: store.dataReducer.accentColour,
+    systemFont: store.dataReducer.systemFont,
+    isLoading: store.dataReducer.isLoading
+});
+
+export default connect(mapState, mapDispatch)(Profile);
+

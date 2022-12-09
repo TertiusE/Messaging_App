@@ -1,8 +1,8 @@
-import { React, useState, useEffect, useRef } from "react";
-import { Text, View, StyleSheet, TextInput, ScrollView, KeyboardAvoidingView, Button } from "react-native";
-import { onSnapshot, collection, doc, setDoc, getFirestore, serverTimestamp, updateDoc, arrayUnion } from "firebase/firestore"
+import { React, useState, useEffect } from "react";
+import { Text, View, StyleSheet, TextInput, ScrollView, KeyboardAvoidingView, Button, Platform } from "react-native";
+import { onSnapshot, doc, getFirestore, updateDoc, arrayUnion } from "firebase/firestore"
+import { setAccentColour, setLoading, setUser, setSystemFont } from "../redux/actions";
 import { connect } from "react-redux";
-import { setUser, setAccentColour, setFont } from "../redux/actions";
 import { nanoid } from "nanoid";
 import fireApp from "../config/firebase";
 
@@ -13,7 +13,6 @@ const Message = ({ user, accentColour, systemFont, route }) => {
   const [text, setText] = useState("");
   const { otherUser } = route.params
   const [messages, setMessages] = useState([])
-  const scrollViewRef = useRef();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -55,7 +54,6 @@ const Message = ({ user, accentColour, systemFont, route }) => {
       })
     });
     setText("")
-
   }
 
   return (
@@ -63,7 +61,7 @@ const Message = ({ user, accentColour, systemFont, route }) => {
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       style={styles.container}
     >
-      <ScrollView style={styles.messagesSection} ref={scrollViewRef} onContentSizeChange={() => scrollViewRef.current.scrollToEnd({ animated: true })}>
+      <ScrollView style={styles.messagesSection}>
         <Text>Messages</Text>
         <Text>{JSON.stringify(messages)}</Text>
       </ScrollView>
@@ -76,7 +74,6 @@ const Message = ({ user, accentColour, systemFont, route }) => {
         />
         <Button title="Send" onPress={sendMessage} />
       </View>
-
     </KeyboardAvoidingView>
   );
 };
@@ -108,10 +105,13 @@ const styles = StyleSheet.create({
   },
 });
 
-const mapDispatch = { setUser, setAccentColour, setFont };
+
+const mapDispatch = { setUser, setAccentColour, setSystemFont, setLoading };
 const mapState = (store) => ({
-  user: store.dataReducer.user,
-  accentColour: store.dataReducer.accentColour,
-  systemFont: store.dataReducer.systemFont
+    user: store.dataReducer.user,
+    accentColour: store.dataReducer.accentColour,
+    systemFont: store.dataReducer.systemFont,
+    isLoading: store.dataReducer.isLoading
 });
+
 export default connect(mapState, mapDispatch)(Message);

@@ -4,7 +4,7 @@ import { UPDATE_USER, LOADING_STATE, UPDATE_ACCENT_COLOR, UPDATE_FONT } from "..
 const initialState = {
     isLoading: true,
     user: null,
-    accentColour: 'blue',
+    accentColour: '#5C4DF8',
     systemFont: null
 }
 

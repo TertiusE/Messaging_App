@@ -1,12 +1,11 @@
 import { useState } from "react";
-import { StyleSheet, SafeAreaView, Text, View, TextInput, Button, TouchableOpacity } from "react-native";
+import { SafeAreaView, Text, View, TextInput, Button, TouchableOpacity } from "react-native";
 import fireApp from "../config/firebase";
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 import { connect } from "react-redux";
-import { setUser } from "../redux/actions";
-import { collection, doc, setDoc, getFirestore, serverTimestamp } from "firebase/firestore"
+import { setAccentColour, setLoading, setUser, setSystemFont } from "../redux/actions";
+import { doc, setDoc, getFirestore } from "firebase/firestore"
 import styles from "../stylesheets/login.component";
-import { getFunctions } from "firebase/functions"
 
 const auth = getAuth(fireApp)
 const db = getFirestore(fireApp)
@@ -35,8 +34,8 @@ const Register = ({ setUser, user, navigation }) => {
                         email: email,
                         photoUrl: "https://images.unsplash.com/photo-1670327138103-c71ef29be098?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=464&q=80",
                         conversations: [],
-                        accentColour: 'indigo',
-                        systemFont: null,
+                        accentColour: '#5C4DF8',
+                        systemFont: null
                     })
                     setDoc(doc(db, 'conversations', userCredential.user.uid), {
                         messages: []
@@ -99,9 +98,12 @@ const Register = ({ setUser, user, navigation }) => {
     );
 };
 
-const mapDispatch = { setUser };
+const mapDispatch = { setUser, setAccentColour, setSystemFont, setLoading };
 const mapState = (store) => ({
     user: store.dataReducer.user,
+    accentColour: store.dataReducer.accentColour,
+    systemFont: store.dataReducer.systemFont,
+    isLoading: store.dataReducer.isLoading
 });
 
 export default connect(mapState, mapDispatch)(Register);

@@ -1,19 +1,14 @@
 import { useState, useEffect } from "react";
-import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import { getAuth} from "firebase/auth";
 import fireApp from "../config/firebase";
 import { setUser, setAccentColour, setSystemFont, setLoading } from "../redux/actions";
 import { connect } from "react-redux";
 import { View, Text, SafeAreaView, FlatList, StyleSheet, Image, TextInput, TouchableHighlight, Button, Modal } from "react-native";
 import { useNavigation } from '@react-navigation/native';
-import "react-native-get-random-values";
-import Profile from "../assets/profile-icon.png";
-import { onSnapshot, collection, query, where, doc, orderBy, limit, getDoc, getFirestore, getDocs, updateDoc, arrayUnion } from "firebase/firestore";
+import { onSnapshot, collection, query, where, doc, orderBy, limit, getFirestore, getDocs, updateDoc, arrayUnion } from "firebase/firestore";
 
 const auth = getAuth(fireApp)
 const db = getFirestore(fireApp)
-
-/* Sample Data */
-
 
 function MessageItem({ fName, lName, time, message, otherUser }) {
     const navigation = useNavigation();
@@ -41,7 +36,7 @@ const renderMessageItem = ({ item }) => (
 );
 
 
-const Home = ({ user, setUser }) => {
+const Home = ({ user, setUser, setAccentColour, setSystemFont }) => {
     const [text, setText] = useState("");
     const [showModal, setModal] = useState(false)
     let [currentUser, setCurrent] = useState({})
@@ -115,7 +110,7 @@ const Home = ({ user, setUser }) => {
             }
         }
 
-        function ModalItem({ fName, otherUser, lName, time, message }) {
+        function ModalItem({ fName, lName , otherUser}) {
             const navigation = useNavigation();
             return (
                 <TouchableHighlight

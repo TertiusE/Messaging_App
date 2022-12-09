@@ -1,11 +1,11 @@
-import { React, useState, useRef, useEffect } from "react";
-import { Text, View, StyleSheet, Modal, FlatList, Switch, ActivityIndicator, TouchableOpacity } from "react-native";
+import { React, useState, useEffect } from "react";
+import { Text, View, StyleSheet, Switch, ActivityIndicator, TouchableOpacity, SafeAreaView } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { setUser, setAccentColour, setSystemFont, setLoading } from "../redux/actions";
 import { connect } from "react-redux";
 import { useFonts } from 'expo-font';
 import DropDownPicker from "react-native-dropdown-picker";
-import { updateDoc } from "firebase/firestore"
+import { updateDoc, doc,  getFirestore, } from "firebase/firestore"
 import fireApp from "../config/firebase";
 
 
@@ -52,9 +52,9 @@ const ColorCircle = ({ color, handleClick, colorThemeSelected }) => {
 
 const Settings = ({ user, isLoading, accentColour, systemFont, setLoading, setAccentColour, setSystemFont }) => {
   const [isEnabled, setIsEnabled] = useState(false);
-  const toggleSwitch = () => setIsEnabled((previousState) => !previousState);
-  const [colorTheme, setColorTheme] = useState("#5C4DF8");
-  const [font, setFont] = useState("sans-serif");
+  const toggleSwitch = () => setIsEnabled(!isEnabled);
+  const [colorTheme, setColorTheme] = useState(user.accentColour);
+  const [font, setFont] = useState(null);
   const [fontOpen, setFontOpen] = useState(false);
 
   const fonts = [
@@ -62,11 +62,10 @@ const Settings = ({ user, isLoading, accentColour, systemFont, setLoading, setAc
     { label: 'Roboto', value: 'Roboto' },
     { label: 'RobotoSlab', value: 'RobotoSlab' },
     { label: 'Poppins', value: 'Poppins' },
-    { label: 'Default', value: null },
+    { label: 'Default', value: null }
   ]
 
-  let sendMessage = async () => {
-    const current_time = new Date()
+  let updateSettings = async () => {
     const userRef = doc(db, "users", user.uid);
     const userUnion = await updateDoc(userRef, {
       systemFont: font,
@@ -77,7 +76,7 @@ const Settings = ({ user, isLoading, accentColour, systemFont, setLoading, setAc
   const onSaveChanges = () => {
     setSystemFont(font)
     setAccentColour(colorTheme)
-    sendMessage().catch(err => console.log(err))
+    updateSettings().catch(err => console.log(err))
   }
 
 
@@ -137,7 +136,7 @@ const Settings = ({ user, isLoading, accentColour, systemFont, setLoading, setAc
         <Text style={[styles.sectionText, { fontFamily: systemFont }]}>Font</Text>
         <View style={{ flex: 1 }}>
           <DropDownPicker
-            style={{ padding: 5, borderColor: "#E8E8E8", color: "#E8E8E8" }}
+            style={{ borderColor: "#E8E8E8", color: "#E8E8E8" }}
             open={fontOpen}
             value={font}
             items={fonts}
