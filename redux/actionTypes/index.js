@@ -1,2 +1,4 @@
 export const UPDATE_USER = "UPDATE_USER"
+export const UPDATE_FONT = "UPDATE_FONT"
+export const UPDATE_ACCENT_COLOR = "UPDATE_ACCENT_COLOR"
 export const LOADING_STATE = "LOADING_STATE"

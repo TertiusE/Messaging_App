@@ -1,18 +1,19 @@
-import { React, useState, useEffect } from "react";
+import { React, useState, useEffect, useRef } from "react";
 import { Text, View, StyleSheet, TextInput, ScrollView, KeyboardAvoidingView, Button } from "react-native";
 import { onSnapshot, collection, doc, setDoc, getFirestore, serverTimestamp, updateDoc, arrayUnion } from "firebase/firestore"
 import { connect } from "react-redux";
-import { setUser } from "../redux/actions";
+import { setUser, setAccentColour, setFont } from "../redux/actions";
 import { nanoid } from "nanoid";
 import fireApp from "../config/firebase";
 
 
 const db = getFirestore(fireApp)
 
-const Message = ({ user, route }) => {
+const Message = ({ user, accentColour, systemFont, route }) => {
   const [text, setText] = useState("");
   const { otherUser } = route.params
   const [messages, setMessages] = useState([])
+  const scrollViewRef = useRef();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -62,7 +63,7 @@ const Message = ({ user, route }) => {
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       style={styles.container}
     >
-      <ScrollView style={styles.messagesSection}>
+      <ScrollView style={styles.messagesSection} ref={scrollViewRef} onContentSizeChange={() => scrollViewRef.current.scrollToEnd({ animated: true })}>
         <Text>Messages</Text>
         <Text>{JSON.stringify(messages)}</Text>
       </ScrollView>
@@ -107,8 +108,10 @@ const styles = StyleSheet.create({
   },
 });
 
-const mapDispatch = { setUser };
+const mapDispatch = { setUser, setAccentColour, setFont };
 const mapState = (store) => ({
   user: store.dataReducer.user,
+  accentColour: store.dataReducer.accentColour,
+  systemFont: store.dataReducer.systemFont
 });
 export default connect(mapState, mapDispatch)(Message);

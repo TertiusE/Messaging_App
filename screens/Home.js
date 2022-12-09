@@ -9,14 +9,13 @@ import "react-native-get-random-values";
 import Profile from "../assets/profile-icon.png";
 import { onSnapshot,collection, query, where, doc, orderBy, limit, getDoc, getFirestore, getDocs, updateDoc, arrayUnion } from "firebase/firestore";
 
-
 const auth = getAuth(fireApp)
 const db = getFirestore(fireApp)
 
 /* Sample Data */
 
 
-function MessageItem({ fName, uid, lName, time, message, otherUser }) {
+function MessageItem({ fName, lName, time, message, otherUser }) {
     const navigation = useNavigation();
     return (
         <TouchableHighlight
