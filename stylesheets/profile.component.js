@@ -7,6 +7,12 @@ export default StyleSheet.create({
     justifyContent: "center",
     backgroundColor: "white",
   },
+  mainContainer__dark: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#1A1A1D"
+  },
   image: {
     width: 150,
     height: 150,
@@ -16,6 +22,12 @@ export default StyleSheet.create({
     fontSize: 24,
     fontWeight: "700",
     marginTop: 10,
+  },
+  header__dark: {
+    fontSize: 24,
+    fontWeight: "700",
+    marginTop: 10,
+    color:'white'
   },
   inputContainer: {
     justifyContent: "stretch",
@@ -30,10 +42,27 @@ export default StyleSheet.create({
     marginBottom: 5,
     marginTop: 25,
   },
+  inputLabel_dark: {
+    color: "white",
+    fontSize: 16,
+    fontWeight: "600",
+    marginBottom: 5,
+    marginTop: 25,
+    
+  },
   inputText: {
     borderBottomColor: "#D7D7D7",
     borderBottomWidth: 1,
     color: "black",
+    paddingTop: 5,
+    paddingBottom: 5,
+    fontSize: 16,
+    fontWeight: "500",
+  },
+  inputText__dark: {
+    borderBottomColor: "white",
+    borderBottomWidth: 1,
+    color: "white",
     paddingTop: 5,
     paddingBottom: 5,
     fontSize: 16,
@@ -71,6 +100,18 @@ export default StyleSheet.create({
       width: 2,
       height: 3,
     },
+    shadowOpacity: 1,
+  },
+  saveButton__dark: {
+    width: "100%",
+    alignSelf: "center",
+    backgroundColor: "#5C4DF8",
+    marginTop: 20,
+    paddingTop: 15,
+    paddingBottom: 15,
+    paddingLeft: 80,
+    paddingRight: 80,
+    borderRadius: 20,  
     shadowOpacity: 1,
   },
   saveText: {

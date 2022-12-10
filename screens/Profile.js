@@ -3,7 +3,7 @@ import {SafeAreaView,Text,StyleSheet,Image,Button,View,TextInput,TouchableOpacit
 import { setUser, setAccentColour, setSystemFont, setLoading, setTheme } from "../redux/actions";
 import { connect } from "react-redux";
 import styles from '../stylesheets/profile.component';
-
+import store from '../redux/store/index';
 
 const Profile = ({ setUser, setAccentColour, setSystemFont, setLoading }) => {
   const [fName, setfName] = useState("");
@@ -14,6 +14,10 @@ const Profile = ({ setUser, setAccentColour, setSystemFont, setLoading }) => {
   const [birthDate, setBirthDate] = useState(new Date());
   const [profileImg, setProfileImg] = useState("");
   const [modalVisible, setModalVisible] = useState(false);
+
+  const state= store.getState();
+  const systemTheme = state.dataReducer.systemTheme
+  const accentColour = state.dataReducer.accentColour
 
   /* Dispatch User Info changes */
   const onSaveChangesClicked = () => {
@@ -49,7 +53,7 @@ const Profile = ({ setUser, setAccentColour, setSystemFont, setLoading }) => {
   };
 
   return (
-    <SafeAreaView style={styles.mainContainer}>
+    <SafeAreaView style={systemTheme == 'light' ? styles.mainContainer:styles.mainContainer__dark}>
       <Modal
         animationType="fade"
         transparent={true}
@@ -77,52 +81,57 @@ const Profile = ({ setUser, setAccentColour, setSystemFont, setLoading }) => {
         source={profileImg
             ? { uri: `${profileImg}` }:{uri: "https://s3-eu-west-1.amazonaws.com/artsthread-content/images/users/68ebb7a3c21864ae50b17a28b4866a94.jpg"}}
         />
-      {fName !== "" && lName !== "" ? (<Text style={styles.header}>{fName} {lName}</Text>
-      ) : ( <Text style={styles.header}>FirstName LastName</Text>)}
+      {fName !== "" && lName !== "" ? (<Text style={systemTheme == 'light' ? styles.header : styles.header__dark}>{fName} {lName}</Text>
+      ) : ( <Text style={systemTheme == 'light' ? styles.header : styles.header__dark}>FirstName LastName</Text>)}
       <Button
         onPress={() => setModalVisible(true)}
         title="Change photo"
         color="#A5ADF9"
       />
       <View style={styles.inputContainer}>
-          <Text style={styles.inputLabel}>First Name</Text>
+          <Text style={systemTheme == 'light' ? styles.inputLabel : styles.inputLabel_dark}>First Name</Text>
           <TextInput
-            style={styles.inputText}
+            style={systemTheme == 'light' ? styles.inputText : styles.inputText__dark}
             placeholder="First Name"
+            placeholderTextColor={systemTheme == 'light' ? 'white' : 'white'}
             value={fName}
             onChangeText={setfName}
           />
-          <Text style={styles.inputLabel}>Last Name</Text>
+          <Text style={systemTheme == 'light' ? styles.inputLabel : styles.inputLabel_dark}>Last Name</Text>
           <TextInput
-            style={styles.inputText}
+            style={systemTheme == 'light' ? styles.inputText : styles.inputText__dark}
             placeholder="Last Name"
+            placeholderTextColor={systemTheme == 'light' ? 'white' : 'white'}
             value={lName}
             onChangeText={setlName}
           />
-          <Text style={styles.inputLabel}>Date of Birth</Text>
+          <Text style={systemTheme == 'light' ? styles.inputLabel : styles.inputLabel_dark}>Date of Birth</Text>
           <View style={styles.bDateContainer}>
             <View style={styles.bDateItem}>
               <TextInput
-                style={[styles.inputText, styles.inputBDate]}
+                style={[systemTheme == 'light' ? styles.inputText : styles.inputText__dark, styles.inputBDate]}
                 placeholder="DD"
+                placeholderTextColor={systemTheme == 'light' ? 'white' : 'white'}
                 value={bDay}
                 onChangeText={setbDay}
               />
               <TextInput
-                style={[styles.inputText, styles.inputBDate]}
+                style={[systemTheme == 'light' ? styles.inputText : styles.inputText__dark, styles.inputBDate]}
                 placeholder="MM"
+                placeholderTextColor={systemTheme == 'light' ? 'white' : 'white'}
                 value={bMonth}
                 onChangeText={setbMonth}
               />
               <TextInput
-                style={[styles.inputText, styles.inputBDate]}
+                style={[systemTheme == 'light' ? styles.inputText : styles.inputText__dark, styles.inputBDate]}
+                placeholderTextColor={systemTheme == 'light' ? 'white' : 'white'}
                 placeholder="YYYY"
                 value={bYear}
                 onChangeText={setbYear}
               />
             </View>
         </View>
-        <TouchableOpacity style={styles.saveButton} onPress={() => onSaveChangesClicked()}>
+        <TouchableOpacity style={systemTheme == 'light' ? styles.saveButton : styles.saveButton__dark} onPress={() => onSaveChangesClicked()}>
           <Text style={styles.saveText}>Save Changes</Text>
         </TouchableOpacity>
       </View>
