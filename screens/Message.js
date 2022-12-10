@@ -51,35 +51,32 @@ const Message = ({ user, accentColour, systemFont, route }) => {
       });
     };
     fetchData().catch(console.error);
-
   }, []);
 
   useEffect(() => {
     const promise = new Promise((resolve, reject) => {
       let allMessages = [];
-      resolve(messages.forEach((object) => {
-        let result = {
-          _id: object.sent_to,
-          text: object.text,
-          createdAt: object.sent_at,
-          user: {
-            _id: object.sent_by,
-            name: object.id,
-            avatar: "https://placeimg.com/140/140/any",
-          },
-        }
-
-        allMessages.push(result)
-        console.log(object)
-        setMessageArray(allMessages)
-      }))
-      reject(
-        console.log("Error retrieving messages")
-      )
+      resolve(
+        messages.forEach((message) => {
+          let result = {
+            _id: message.sent_to,
+            text: message.text,
+            createdAt: message.sent_at,
+            user: {
+              _id: message.sent_by,
+              name: message.id,
+              avatar: "https://placeimg.com/140/140/any",
+            },
+          };
+          allMessages.push(result);
+          setMessageArray(allMessages);
+        })
+      );
+      reject(console.log("Error retrieving messages"));
     });
     promise.then((value) => {
-      console.log(value)
-    }, [])
+      console.log(value);
+    }, []);
   }, [messages]);
 
   let sendMessage = async () => {
@@ -110,30 +107,11 @@ const Message = ({ user, accentColour, systemFont, route }) => {
     setText("");
   };
 
-  const [testMessages, setTestMessages] = useState([]);
-
-  useEffect(() => {
-    setTestMessages([
-      {
-        _id: 1, // sender
-        sent_by: "",
-        createdAt: new Date(),
-        text: "hello",
-        user: {
-          _id: "QT3zmmAuw7ZYbURLCzUqTtEYah73", // reciever
-          name: "React Native",
-          avatar: "https://placeimg.com/140/140/any",
-        },
-      },
-    ]);
-  }, []);
-
-  const onSend = useCallback((testmessage = []) => {
+  const onSend = useCallback((message = []) => {
     sendMessage();
     setMessageArray((previousMessages) =>
-      GiftedChat.append(previousMessages, testmessage)
+      GiftedChat.append(previousMessages, message)
     );
-    console.log(testmessage);
   });
 
   function handMessageClick(textVal) {
@@ -142,44 +120,21 @@ const Message = ({ user, accentColour, systemFont, route }) => {
 
   return (
     <GiftedChat
-      messages={messageArray == undefined ? console.log("no items") : messageArray}
+      messages={
+        messageArray == undefined
+          ? console.log("No messaages found.")
+          : messageArray
+      }
       onInputTextChanged={(text) => handMessageClick(text)}
       onSend={(message) => onSend(message)}
       user={{
         _id: user.uid,
         name: user.fName,
-        avatar: user.photoUrl
-    }}
+        avatar: user.photoUrl,
+      }}
     />
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-  },
-  messagesSection: {
-    flex: 1,
-    backgroundColor: "#F9F9F9",
-  },
-  inputSection: {
-    flex: 0.5,
-    width: "100%",
-    flexDirection: "row",
-    backgroundColor: "white",
-  },
-  input: {
-    flex: 1,
-    flexDirection: "row",
-    padding: 1,
-    backgroundColor: "#E3E7EE",
-    borderRadius: 5,
-    fontSize: 16,
-    height: 40,
-    margin: 20,
-  },
-});
 
 const mapDispatch = { setUser, setAccentColour, setSystemFont, setLoading };
 const mapState = (store) => ({
