@@ -1,14 +1,28 @@
 import { React, useState, useEffect, useCallback } from "react";
-import { onSnapshot,doc, getFirestore,updateDoc,arrayUnion} from "firebase/firestore";
-import { setUser, setAccentColour, setSystemFont, setLoading, setTheme } from "../redux/actions";
+import {
+  onSnapshot,
+  doc,
+  getFirestore,
+  updateDoc,
+  arrayUnion,
+} from "firebase/firestore";
+import {
+  setUser,
+  setAccentColour,
+  setSystemFont,
+  setLoading,
+  setTheme,
+} from "../redux/actions";
 import { connect } from "react-redux";
 import uuid from "react-native-uuid";
 import fireApp from "../config/firebase";
-import { GiftedChat } from "react-native-gifted-chat";
+import { GiftedChat, Bubble } from "react-native-gifted-chat";
+import store from "../redux/store/index";
+import { View } from "react-native";
 
 const db = getFirestore(fireApp);
 
-const Message = ({ user, accentColour, systemFont, route }) => {
+const Message = ({ user, accentColour, systemTheme, systemFont, route }) => {
   const [text, setText] = useState("");
   const { otherUser } = route.params;
   const [messages, setMessages] = useState([]);
@@ -92,37 +106,42 @@ const Message = ({ user, accentColour, systemFont, route }) => {
       GiftedChat.append(previousMessages, message)
     );
   });
-
   function handMessageClick(textVal) {
     setText(textVal);
   }
 
   return (
-    <GiftedChat
-      messages={
-        messageArray == undefined
-          ? console.log("No messaages found.")
-          : messageArray
-      }
-      onInputTextChanged={(text) => handMessageClick(text)}
-      onSend={(message) => onSend(message)}
-      user={{
-        _id: user.uid,
-        name: user.fName,
-        avatar: user.photoUrl,
-      }}
-    />
+      <GiftedChat
+        messages={
+          messageArray == undefined
+            ? console.log("No messaages found.")
+            : messageArray
+        }
+        onInputTextChanged={(text) => handMessageClick(text)}
+        onSend={(message) => onSend(message)}
+        user={{
+          _id: user.uid,
+          name: user.fName,
+          avatar: user.photoUrl,
+        }}
+        renderBubble={accentColour}
+      />
   );
 };
 
-const mapDispatch = { setUser, setAccentColour, setSystemFont, setLoading, setTheme };
+const mapDispatch = {
+  setUser,
+  setAccentColour,
+  setSystemFont,
+  setLoading,
+  setTheme,
+};
 const mapState = (store) => ({
-    user: store.dataReducer.user,
-    accentColour: store.dataReducer.accentColour,
-    systemFont: store.dataReducer.systemFont,
-    systemTheme: store.dataReducer.systemTheme,
-    isLoading: store.dataReducer.isLoading
+  user: store.dataReducer.user,
+  accentColour: store.dataReducer.accentColour,
+  systemFont: store.dataReducer.systemFont,
+  systemTheme: store.dataReducer.systemTheme,
+  isLoading: store.dataReducer.isLoading,
 });
-
 
 export default connect(mapState, mapDispatch)(Message);

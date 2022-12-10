@@ -9,23 +9,28 @@ import { onSnapshot, collection, query, where, doc, orderBy, limit, getFirestore
 import Profile from "../assets/profile-icon.png";
 import { Ionicons } from '@expo/vector-icons';
 import styles from '../stylesheets/home.component';
+import store from '../redux/store/index'
 
 const auth = getAuth(fireApp)
 const db = getFirestore(fireApp)
 
 function MessageItem({ fName, lName, time, message, otherUser }) {
+    const state= store.getState();
+    const systemTheme = state.dataReducer.systemTheme
+    const accentColour = state.dataReducer.accentColour
+
     const navigation = useNavigation();
     return (
         <TouchableHighlight onPress={() => navigation.navigate('Message', {
             recievingUser: `${fName} ${lName}`,
             otherUser: otherUser
         })}>
-            <View style={styles.itemContainer}>
+            <View style={systemTheme == 'light' ? styles.itemContainer : styles.itemContainer__dark}>
                 <Image style={{ height: 60, width: 60 }} source={Profile} />
                 <View style={styles.itemSection}>
                     <View style={styles.itemHeader}>
-                        <Text style={styles.itemName}>{fName} {lName}</Text>
-                        <Text style={styles.itemTime}>{time}</Text>
+                        <Text style={systemTheme == 'light' ? styles.itemName : styles.itemName__dark}>{fName} {lName}</Text>
+                        <Text style={[styles.itemTime, {color: accentColour}]}>{time}</Text>
                     </View>
                     <Text style={styles.itemMessage}>{message}</Text>
                 </View>
@@ -35,7 +40,7 @@ function MessageItem({ fName, lName, time, message, otherUser }) {
 }
 
 const renderMessageItem = ({ item }) => (
-    <MessageItem fName={item.fName} lName={item.lName} time="3:28pm" message="Random Message" otherUser={item} />
+    <MessageItem fName={item.fName} lName={item.lName} time="3:28pm" message="Random Message" otherUser={item} systemTheme/>
 );
 
 
@@ -193,10 +198,11 @@ const Home = ({ user, setUser, setAccentColour, setSystemFont, systemTheme, syst
     }
 
     return (
-        <View style={styles.mainContainer}>
+        <View style={systemTheme == 'light' ? styles.mainContainer : styles.mainContainer__dark}>
             <TextInput
-                style={styles.input}
+                style={systemTheme == 'light' ? styles.input : styles.input__dark}
                 placeholder="Search"
+                placeholderTextColor={systemTheme == 'light' ? 'black': 'white'}
                 value={text}
                 onChangeText={setText}
             />
