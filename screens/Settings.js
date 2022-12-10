@@ -1,4 +1,4 @@
-import { React, useState } from "react";
+import { React, useState, useEffect } from "react";
 import { Text, View, StyleSheet, Switch, TouchableOpacity, SafeAreaView } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { setUser, setAccentColour, setSystemFont, setLoading, setTheme } from "../redux/actions";
@@ -7,12 +7,10 @@ import { useFonts } from 'expo-font';
 import DropDownPicker from "react-native-dropdown-picker";
 import { updateDoc, doc, getFirestore, } from "firebase/firestore"
 import fireApp from "../config/firebase";
-import { useNavigation } from '@react-navigation/native';
-import { getAuth } from "firebase/auth";
+import { useIsFocused } from '@react-navigation/native'
 import styles from '../stylesheets/settings.component';
 
 
-const auth = getAuth(fireApp)
 const db = getFirestore(fireApp)
 
 const colourOptions = {
@@ -38,7 +36,7 @@ const fonts = [
   { label: 'Default', value: null }
 ]
 
-const ColorCircle = ({ color, handleClick, colorThemeSelected}) => {
+const ColorCircle = ({ color, handleClick, colorThemeSelected }) => {
   return (
     <View>
       <View style={styles.colourSection}>
@@ -67,19 +65,14 @@ const Settings = ({ user, isLoading, accentColour, systemFont, systemTheme, setL
   const [colorTheme, setColorTheme] = useState(user.accentColour);
   const [font, setFont] = useState(user.systemFont);
   const [fontOpen, setFontOpen] = useState(false);
-  const navigation = useNavigation();
+  const isFocused = useIsFocused()
 
-  const signOut = async () => {
-    try {
-        await auth.signOut()
-    } catch (err) {
-        console.log(err)
-    }
-}
 
-  navigation.setOptions({
-    headerRight: () => <TouchableOpacity onPress={signOut}><Ionicons style={{ marginRight: 10, color: `${accentColour}` }} name="log-out-outline" size="34" /></TouchableOpacity>
-  })
+  useEffect(()=>{
+    setIsEnabled(user.systemTheme == 'dark')
+    setFont(user.systemFont)
+    setColorTheme(user.accentColour)
+  },[isFocused])
 
   let updateSettings = async () => {
     const userRef = doc(db, "users", user.uid);
@@ -103,7 +96,7 @@ const Settings = ({ user, isLoading, accentColour, systemFont, systemTheme, setL
 
   return (
     <View style={systemTheme == 'light' ? styles.container : styles.container__dark}>
-      <View style={[systemTheme == 'light' ? styles.sectionContent : styles.sectionContent__dark, {borderBottomWidth:0}]}>
+      <View style={[systemTheme == 'light' ? styles.sectionContent : styles.sectionContent__dark, { borderBottomWidth: 0 }]}>
         <Text style={[systemTheme == 'light' ? styles.sectionText : styles.sectionText__dark, { fontFamily: systemFont }]}>Accent Colour</Text>
       </View>
       <View style={systemTheme == 'light' ? styles.colourSection : styles.colourSection__dark}>
@@ -121,9 +114,9 @@ const Settings = ({ user, isLoading, accentColour, systemFont, systemTheme, setL
           {isEnabled ? "Dark Mode" : "Light Mode"}
         </Text>
         <Switch
-          trackColor={{ false: "#C1CFFF", true: "#5C4DF8" }}
+          trackColor={{ false: "white", true: accentColour }}
           thumbColor={isEnabled ? "white" : "#f4f3f4"}
-          ios_backgroundColor="#C1CFFF"
+          ios_backgroundColor="white"
           onValueChange={toggleSwitch}
           value={isEnabled}
         />
@@ -141,16 +134,16 @@ const Settings = ({ user, isLoading, accentColour, systemFont, systemTheme, setL
             placeholder="Select Font"
             setItems={fonts}
             containerStyle={{
-              borderColor:'white'
+              borderColor: 'white'
             }}
             textStyle={{
               fontSize: 15,
-              color:'grey'
+              color: 'grey'
             }}
           />
         </View>
       </View>
-      <TouchableOpacity style={systemTheme == 'light' ? styles.saveButton : styles.saveButton__dark} onPress={() => onSaveChanges()}>
+      <TouchableOpacity style={[systemTheme == 'light' ? styles.saveButton : styles.saveButton__dark, { backgroundColor: accentColour }]} onPress={() => onSaveChanges()}>
         <Text style={styles.saveText}>Save Changes</Text>
       </TouchableOpacity>
     </View>

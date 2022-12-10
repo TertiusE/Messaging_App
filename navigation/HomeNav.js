@@ -1,5 +1,4 @@
 import React from "react";
-import Home from "../screens/Home";
 import Message from "../screens/Message";
 import Profile from "../screens/Profile";
 import Settings from "../screens/Settings";

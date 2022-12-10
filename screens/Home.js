@@ -63,7 +63,7 @@ const renderMessageItem = ({ item }) => (
 );
 
 
-const Home = ({ user, setUser, setAccentColour, setSystemFont, systemTheme, systemFont, accentColour }) => {
+const Home = ({ user, setUser, setAccentColour,setTheme, setSystemFont, systemTheme, systemFont, accentColour }) => {
     const navigation = useNavigation();
     const [text, setText] = useState("");
     const [showModal, setModal] = useState(false)
@@ -76,6 +76,7 @@ const Home = ({ user, setUser, setAccentColour, setSystemFont, systemTheme, syst
                 setUser(doc.data())
                 setAccentColour(doc.data().accentColour)
                 setSystemFont(doc.data().systemFont)
+                setTheme(doc.data().systemTheme)
             });
         }
         fetchData()
@@ -224,6 +225,7 @@ const Home = ({ user, setUser, setAccentColour, setSystemFont, systemTheme, syst
                 placeholderTextColor={systemTheme == 'light' ? 'black' : 'white'}
                 value={text}
                 onChangeText={setText}
+                keyboardAppearance={systemTheme}
             />
             <FlatList
                 data={currentUser.conversations}
