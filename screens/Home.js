@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { getAuth } from "firebase/auth";
 import fireApp from "../config/firebase";
-import { setUser, setAccentColour, setSystemFont, setLoading } from "../redux/actions";
+import { setUser, setAccentColour, setSystemFont, setLoading, setTheme } from "../redux/actions";
 import { connect } from "react-redux";
 import { View, Text, SafeAreaView, FlatList, StyleSheet, Image, TextInput, TouchableHighlight, TouchableOpacity, Button, Modal } from "react-native";
 import { useNavigation } from '@react-navigation/native';
@@ -38,14 +38,14 @@ const renderMessageItem = ({ item }) => (
 );
 
 
-const Home = ({ user, setUser, setAccentColour, setSystemFont }) => {
+const Home = ({ user, setUser, setAccentColour, setSystemFont, systemTheme }) => {
     const navigation = useNavigation();
     const [text, setText] = useState("");
     const [showModal, setModal] = useState(false)
     let [currentUser, setCurrent] = useState({})
 
     navigation.setOptions({
-        headerRight: () =>   <TouchableOpacity onPress={signOut}><Ionicons style={{marginRight:10, color:"#5C4DF8"}}name="log-out-outline" size="34"/></TouchableOpacity>
+        headerRight: () => <TouchableOpacity onPress={signOut}><Ionicons style={{ marginRight: 10, color: "#5C4DF8" }} name="log-out-outline" size="34" /></TouchableOpacity>
     })
 
     useEffect(() => {
@@ -67,18 +67,20 @@ const Home = ({ user, setUser, setAccentColour, setSystemFont }) => {
 
         useEffect(() => {
             const fetchData = async () => {
-                let newData = []
-                let usersRef = collection(db, "users")
-                const q = query(usersRef, orderBy("lName"), limit(5))
-                const allUsers = await getDocs(q);
-                allUsers.forEach((doc) => {
-                    newData.push(doc.data())
-                })
-                setModalData(newData)
+                if (modalText.length <= 1) {
+                    let newData = []
+                    let usersRef = collection(db, "users")
+                    const q = query(usersRef, orderBy("lName"), limit(5))
+                    const allUsers = await getDocs(q);
+                    allUsers.forEach((doc) => {
+                        newData.push(doc.data())
+                    })
+                    setModalData(newData)
+                }
             }
 
             fetchData().catch((err) => console.log(err));
-        }, [])
+        }, [modalText])
 
         let searchUsers = async () => {
             let newData = []
@@ -91,13 +93,19 @@ const Home = ({ user, setUser, setAccentColour, setSystemFont }) => {
             const allEmails = await getDocs(email)
 
             allFirst.forEach((doc) => {
-                newData.push(doc.data())
+                if (!newData.includes(doc.data())) {
+                    newData.push(doc.data())
+                }
             })
             allLast.forEach((doc) => {
-                newData.push(doc.data())
+                if (!newData.includes(doc.data())) {
+                    newData.push(doc.data())
+                }
             })
             allEmails.forEach((doc) => {
-                newData.push(doc.data())
+                if (!newData.includes(doc.data())) {
+                    newData.push(doc.data())
+                }
             })
             setModalData(newData)
         }
@@ -164,6 +172,7 @@ const Home = ({ user, setUser, setAccentColour, setSystemFont }) => {
                         placeholder="Search"
                         value={modalText}
                         onChangeText={setModalText}
+                        keyboardAppearance={systemTheme}
                     />
                     <Button title="Search" onPress={() => { searchUsers() }} />
                     <FlatList
@@ -251,11 +260,12 @@ const styles = StyleSheet.create({
     },
 });
 
-const mapDispatch = { setUser, setAccentColour, setSystemFont, setLoading };
+const mapDispatch = { setUser, setAccentColour, setSystemFont, setLoading, setTheme };
 const mapState = (store) => ({
     user: store.dataReducer.user,
     accentColour: store.dataReducer.accentColour,
     systemFont: store.dataReducer.systemFont,
+    systemTheme: store.dataReducer.systemTheme,
     isLoading: store.dataReducer.isLoading
 });
 

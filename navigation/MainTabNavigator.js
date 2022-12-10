@@ -17,9 +17,6 @@ const screenOptions = (route, color) => {
     case "Messages":
       iconName = "home";
       break;
-    case "Chat":
-      iconName = "chatbubbles-outline";
-      break;
     case "Profile":
       iconName = "person-circle-outline";
       break;
@@ -27,7 +24,6 @@ const screenOptions = (route, color) => {
       iconName = "settings-outline";
       break;
   }
-
   return <Ionicons name={iconName} color={color} size={24} />;
 };
 

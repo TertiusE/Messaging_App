@@ -1,27 +1,6 @@
 import { React, useState, useEffect, useCallback } from "react";
-import {
-  Text,
-  View,
-  StyleSheet,
-  TextInput,
-  ScrollView,
-  KeyboardAvoidingView,
-  Button,
-  Platform,
-} from "react-native";
-import {
-  onSnapshot,
-  doc,
-  getFirestore,
-  updateDoc,
-  arrayUnion,
-} from "firebase/firestore";
-import {
-  setAccentColour,
-  setLoading,
-  setUser,
-  setSystemFont,
-} from "../redux/actions";
+import { onSnapshot,doc, getFirestore,updateDoc,arrayUnion} from "firebase/firestore";
+import { setUser, setAccentColour, setSystemFont, setLoading, setTheme } from "../redux/actions";
 import { connect } from "react-redux";
 import uuid from "react-native-uuid";
 import fireApp from "../config/firebase";
@@ -136,12 +115,14 @@ const Message = ({ user, accentColour, systemFont, route }) => {
   );
 };
 
-const mapDispatch = { setUser, setAccentColour, setSystemFont, setLoading };
+const mapDispatch = { setUser, setAccentColour, setSystemFont, setLoading, setTheme };
 const mapState = (store) => ({
-  user: store.dataReducer.user,
-  accentColour: store.dataReducer.accentColour,
-  systemFont: store.dataReducer.systemFont,
-  isLoading: store.dataReducer.isLoading,
+    user: store.dataReducer.user,
+    accentColour: store.dataReducer.accentColour,
+    systemFont: store.dataReducer.systemFont,
+    systemTheme: store.dataReducer.systemTheme,
+    isLoading: store.dataReducer.isLoading
 });
+
 
 export default connect(mapState, mapDispatch)(Message);

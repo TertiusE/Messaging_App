@@ -1,7 +1,7 @@
 import { React, useState, useEffect } from "react";
 import { Text, View, StyleSheet, Switch, ActivityIndicator, TouchableOpacity, SafeAreaView } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { setUser, setAccentColour, setSystemFont, setLoading } from "../redux/actions";
+import { setUser, setAccentColour, setSystemFont, setLoading, setTheme } from "../redux/actions";
 import { connect } from "react-redux";
 import { useFonts } from 'expo-font';
 import DropDownPicker from "react-native-dropdown-picker";
@@ -34,7 +34,7 @@ const fonts = [
   { label: 'Default', value: null }
 ]
 
-const ColorCircle = ({ color, handleClick, colorThemeSelected }) => {
+const ColorCircle = ({ color, handleClick, colorThemeSelected, systemTheme }) => {
   return (
     <View>
       <View style={styles.colourSection}>
@@ -57,8 +57,8 @@ const ColorCircle = ({ color, handleClick, colorThemeSelected }) => {
 };
 
 
-const Settings = ({ user, isLoading, accentColour, systemFont, setLoading, setAccentColour, setSystemFont }) => {
-  const [isEnabled, setIsEnabled] = useState(false);
+const Settings = ({ user, isLoading, accentColour, systemFont, systemTheme, setLoading, setAccentColour, setSystemFont, setTheme }) => {
+  const [isEnabled, setIsEnabled] = useState(user.systemTheme == 'dark');
   const toggleSwitch = () => setIsEnabled(!isEnabled);
   const [colorTheme, setColorTheme] = useState(user.accentColour);
   const [font, setFont] = useState(user.systemFont);
@@ -68,13 +68,15 @@ const Settings = ({ user, isLoading, accentColour, systemFont, setLoading, setAc
     const userRef = doc(db, "users", user.uid);
     const userUnion = await updateDoc(userRef, {
       systemFont: font,
-      accentColour: colorTheme
+      accentColour: colorTheme,
+      systemTheme:isEnabled ? "dark":"light"
     });
   }
 
   const onSaveChanges = () => {
     setSystemFont(font)
     setAccentColour(colorTheme)
+    setTheme(isEnabled ? "dark":"light")
     updateSettings().catch(err => console.log(err))
   }
 
@@ -224,12 +226,14 @@ const styles = StyleSheet.create({
 });
 
 
-const mapDispatch = { setUser, setAccentColour, setSystemFont, setLoading };
+const mapDispatch = { setUser, setAccentColour, setSystemFont, setLoading, setTheme };
 const mapState = (store) => ({
-  user: store.dataReducer.user,
-  accentColour: store.dataReducer.accentColour,
-  systemFont: store.dataReducer.systemFont,
-  isLoading: store.dataReducer.isLoading
+    user: store.dataReducer.user,
+    accentColour: store.dataReducer.accentColour,
+    systemFont: store.dataReducer.systemFont,
+    systemTheme: store.dataReducer.systemTheme,
+    isLoading: store.dataReducer.isLoading
 });
+
 
 export default connect(mapState, mapDispatch)(Settings)

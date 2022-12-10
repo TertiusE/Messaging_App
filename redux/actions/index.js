@@ -1,4 +1,4 @@
-import { UPDATE_USER, LOADING_STATE, UPDATE_ACCENT_COLOR, UPDATE_FONT } from "../actionTypes"
+import { UPDATE_USER, LOADING_STATE, UPDATE_ACCENT_COLOR, UPDATE_FONT, UPDATE_THEME } from "../actionTypes"
 
 
 export const setUser = (i) => {
@@ -25,6 +25,13 @@ export const setSystemFont = (i) => {
 export const setAccentColour = (i) => {
     return {
     type: UPDATE_ACCENT_COLOR,
+    payload:  i
+    }
+}
+
+export const setTheme = (i) => {
+    return {
+    type: UPDATE_THEME,
     payload:  i
     }
 }

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import {SafeAreaView,Text,StyleSheet,Image,Button,View,TextInput,TouchableOpacity, Modal} from "react-native";
-import { setAccentColour, setLoading, setUser, setSystemFont } from "../redux/actions";
+import { setUser, setAccentColour, setSystemFont, setLoading, setTheme } from "../redux/actions";
 import { connect } from "react-redux";
 
 
@@ -258,13 +258,15 @@ const styles = StyleSheet.create({
 });
 
 
-const mapDispatch = { setUser, setAccentColour, setSystemFont, setLoading };
+const mapDispatch = { setUser, setAccentColour, setSystemFont, setLoading, setTheme };
 const mapState = (store) => ({
     user: store.dataReducer.user,
     accentColour: store.dataReducer.accentColour,
     systemFont: store.dataReducer.systemFont,
+    systemTheme: store.dataReducer.systemTheme,
     isLoading: store.dataReducer.isLoading
 });
+
 
 export default connect(mapState, mapDispatch)(Profile);
 
