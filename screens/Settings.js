@@ -38,7 +38,7 @@ const fonts = [
   { label: 'Default', value: null }
 ]
 
-const ColorCircle = ({ color, handleClick, colorThemeSelected, systemTheme }) => {
+const ColorCircle = ({ color, handleClick, colorThemeSelected}) => {
   return (
     <View>
       <View style={styles.colourSection}>
@@ -102,11 +102,11 @@ const Settings = ({ user, isLoading, accentColour, systemFont, systemTheme, setL
   };
 
   return (
-    <View style={styles.container}>
-      <View style={[styles.sectionContent, { borderBottomWidth: 0 }]}>
-        <Text style={[styles.sectionText, { fontFamily: systemFont }]}>Accent Colour</Text>
+    <View style={systemTheme == 'light' ? styles.container : styles.container__dark}>
+      <View style={[systemTheme == 'light' ? styles.sectionContent : styles.sectionContent__dark, {borderBottomWidth:0}]}>
+        <Text style={[systemTheme == 'light' ? styles.sectionText : styles.sectionText__dark, { fontFamily: systemFont }]}>Accent Colour</Text>
       </View>
-      <View style={styles.colourSection}>
+      <View style={systemTheme == 'light' ? styles.colourSection : styles.colourSection__dark}>
         {Object.keys(colourOptions).map((keyName, i) => (
           <ColorCircle
             color={colourOptions[keyName]}
@@ -116,8 +116,8 @@ const Settings = ({ user, isLoading, accentColour, systemFont, systemTheme, setL
           />
         ))}
       </View>
-      <View style={styles.sectionContent}>
-        <Text style={[styles.sectionText, { fontFamily: systemFont }]}>
+      <View style={systemTheme == 'light' ? styles.sectionContent : styles.sectionContent__dark}>
+        <Text style={[systemTheme == 'light' ? styles.sectionText : styles.sectionText__dark, { fontFamily: systemFont }]}>
           {isEnabled ? "Dark Mode" : "Light Mode"}
         </Text>
         <Switch
@@ -128,11 +128,11 @@ const Settings = ({ user, isLoading, accentColour, systemFont, systemTheme, setL
           value={isEnabled}
         />
       </View>
-      <View style={[styles.sectionContent, { height: 70 }]}>
-        <Text style={[styles.sectionText, { fontFamily: systemFont }]}>Font</Text>
+      <View style={[systemTheme == 'light' ? styles.sectionContent : styles.sectionContent__dark, { height: 70 }]}>
+        <Text style={[systemTheme == 'light' ? styles.sectionText : styles.sectionText__dark, { fontFamily: systemFont }]}>Font</Text>
         <View style={{ flex: 1 }}>
           <DropDownPicker
-            style={{ borderColor: "#E8E8E8", color: "#E8E8E8" }}
+            style={systemTheme == 'light' ? { borderColor: "#E8E8E8", color: "white" } : { borderColor: "#2B2A2E", backgroundColor: "#2B2A2E", color: "white" }}
             open={fontOpen}
             value={font}
             items={fonts}
@@ -140,10 +140,17 @@ const Settings = ({ user, isLoading, accentColour, systemFont, systemTheme, setL
             setValue={setFont}
             placeholder="Select Font"
             setItems={fonts}
+            containerStyle={{
+              borderColor:'white'
+            }}
+            textStyle={{
+              fontSize: 15,
+              color:'grey'
+            }}
           />
         </View>
       </View>
-      <TouchableOpacity style={styles.saveButton} onPress={() => onSaveChanges()}>
+      <TouchableOpacity style={systemTheme == 'light' ? styles.saveButton : styles.saveButton__dark} onPress={() => onSaveChanges()}>
         <Text style={styles.saveText}>Save Changes</Text>
       </TouchableOpacity>
     </View>

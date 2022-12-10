@@ -5,6 +5,11 @@ export default StyleSheet.create({
       flex: 1,
       backgroundColor: "white",
   },
+  mainContainer__dark: {
+    flex: 1,
+    backgroundColor: "#1A1A1D",
+  },
+
   input: {
       padding: 15,
       backgroundColor: "#E3E7EE",
@@ -12,6 +17,15 @@ export default StyleSheet.create({
       borderRadius: 10,
       fontSize: 18,
   },
+  input__dark: {
+    padding: 15,
+    backgroundColor: "#2B2A2E",
+    margin: 15,
+    borderRadius: 10,
+    fontSize: 18,
+    color:'white'
+  },
+
   itemContainer: {
       flex: 1,
       flexDirection: "row",
@@ -20,6 +34,15 @@ export default StyleSheet.create({
       borderBottomWidth: 1,
       borderBottomColor: "#D9D9D9",
   },
+
+  itemContainer__dark: {
+    flex: 1,
+    flexDirection: "row",
+    backgroundColor: "#1A1A1D",
+    padding: 15,
+    borderBottomWidth: 1,
+    borderBottomColor: "#494949",
+},
   itemSection: {
       paddingTop: 5,
       flex: 1,
@@ -34,10 +57,21 @@ export default StyleSheet.create({
       fontSize: 19,
       fontWeight: "700",
   },
+
+  itemName__dark: {
+    fontSize: 19,
+    fontWeight: "700",
+    color:'white'
+},
+  
   itemMessage: {
       fontSize: 16,
       color: "#999999",
   },
+  itemMessage__dark: {
+    fontSize: 16,
+    color: "#999999",
+},
   itemTime: {
       fontSize: 16,
       color: "#A5ADF9",
