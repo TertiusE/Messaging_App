@@ -1,14 +1,17 @@
-import { React, useState, useEffect } from "react";
-import { Text, View, StyleSheet, Switch, ActivityIndicator, TouchableOpacity, SafeAreaView } from "react-native";
+import { React, useState } from "react";
+import { Text, View, StyleSheet, Switch, TouchableOpacity, SafeAreaView } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { setUser, setAccentColour, setSystemFont, setLoading, setTheme } from "../redux/actions";
 import { connect } from "react-redux";
 import { useFonts } from 'expo-font';
 import DropDownPicker from "react-native-dropdown-picker";
-import { updateDoc, doc,  getFirestore, } from "firebase/firestore"
+import { updateDoc, doc, getFirestore, } from "firebase/firestore"
 import fireApp from "../config/firebase";
+import { useNavigation } from '@react-navigation/native';
+import { getAuth } from "firebase/auth";
 
 
+const auth = getAuth(fireApp)
 const db = getFirestore(fireApp)
 
 const colourOptions = {
@@ -63,47 +66,39 @@ const Settings = ({ user, isLoading, accentColour, systemFont, systemTheme, setL
   const [colorTheme, setColorTheme] = useState(user.accentColour);
   const [font, setFont] = useState(user.systemFont);
   const [fontOpen, setFontOpen] = useState(false);
+  const navigation = useNavigation();
+
+  const signOut = async () => {
+    try {
+        await auth.signOut()
+    } catch (err) {
+        console.log(err)
+    }
+}
+
+  navigation.setOptions({
+    headerRight: () => <TouchableOpacity onPress={signOut}><Ionicons style={{ marginRight: 10, color: `${accentColour}` }} name="log-out-outline" size="34" /></TouchableOpacity>
+  })
 
   let updateSettings = async () => {
     const userRef = doc(db, "users", user.uid);
     const userUnion = await updateDoc(userRef, {
       systemFont: font,
       accentColour: colorTheme,
-      systemTheme:isEnabled ? "dark":"light"
+      systemTheme: isEnabled ? "dark" : "light"
     });
   }
 
   const onSaveChanges = () => {
     setSystemFont(font)
     setAccentColour(colorTheme)
-    setTheme(isEnabled ? "dark":"light")
+    setTheme(isEnabled ? "dark" : "light")
     updateSettings().catch(err => console.log(err))
   }
 
   const handleColorClick = (colorPressed) => {
     setColorTheme(colorPressed);
   };
-
-  const [fontsLoaded] = useFonts({
-    'Caveat': require("../assets/fonts/Caveat/Caveat-Bold.ttf"),
-    'Roboto': require("../assets/fonts/Roboto/Roboto-Regular.ttf"),
-    'RobotoSlab': require("../assets/fonts/Roboto_Slab/RobotoSlab-Medium.ttf"),
-    'Poppins': require("../assets/fonts/Poppins/Poppins-Medium.ttf"),
-  });
-
-  useEffect(() => {
-    if (fontsLoaded) {
-      setLoading(false)
-    }
-  }, [fontsLoaded])
-
-  if (isLoading) {
-    return (
-      <SafeAreaView style={styles.container}>
-        <ActivityIndicator size="large" color="#2980B9" />
-      </SafeAreaView>
-    );
-  }
 
   return (
     <View style={styles.container}>
@@ -228,11 +223,11 @@ const styles = StyleSheet.create({
 
 const mapDispatch = { setUser, setAccentColour, setSystemFont, setLoading, setTheme };
 const mapState = (store) => ({
-    user: store.dataReducer.user,
-    accentColour: store.dataReducer.accentColour,
-    systemFont: store.dataReducer.systemFont,
-    systemTheme: store.dataReducer.systemTheme,
-    isLoading: store.dataReducer.isLoading
+  user: store.dataReducer.user,
+  accentColour: store.dataReducer.accentColour,
+  systemFont: store.dataReducer.systemFont,
+  systemTheme: store.dataReducer.systemTheme,
+  isLoading: store.dataReducer.isLoading
 });
 
 

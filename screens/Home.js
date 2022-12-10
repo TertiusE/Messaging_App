@@ -38,15 +38,11 @@ const renderMessageItem = ({ item }) => (
 );
 
 
-const Home = ({ user, setUser, setAccentColour, setSystemFont, systemTheme, systemFont }) => {
+const Home = ({ user, setUser, setAccentColour, setSystemFont, systemTheme, systemFont, accentColour }) => {
     const navigation = useNavigation();
     const [text, setText] = useState("");
     const [showModal, setModal] = useState(false)
     let [currentUser, setCurrent] = useState({})
-
-    navigation.setOptions({
-        headerRight: () => <TouchableOpacity onPress={signOut}><Ionicons style={{ marginRight: 10, color:{accentColour} }} name="log-out-outline" size="34" /></TouchableOpacity>
-    })
 
     useEffect(() => {
         const fetchData = async () => {
@@ -152,7 +148,7 @@ const Home = ({ user, setUser, setAccentColour, setSystemFont, systemTheme, syst
                         <Image style={{ height: 60, width: 60 }} source={Profile} />
                         <View style={styles.itemSection}>
                             <View style={styles.itemHeader}>
-                                <Text style={[styles.itemName, {fontFamily:systemFont}]}>{fName} {lName}</Text>
+                                <Text style={[styles.itemName, { fontFamily: systemFont }]}>{fName} {lName}</Text>
                             </View>
                         </View>
                     </View>
@@ -209,7 +205,15 @@ const Home = ({ user, setUser, setAccentColour, setSystemFont, systemTheme, syst
                 keyExtractor={(item) => item.uid}
             />
             <FullView />
-            <Button title="Add" onPress={() => { setModal(!showModal) }} />
+
+            <View style={{position:"absolute", right: 15, bottom: 15}}>
+                <TouchableOpacity
+                    style={[styles.colourButton, { backgroundColor: accentColour }]}
+                    onPress={() => { setModal(!showModal) }}
+                >
+                    <Ionicons name="add" size={50} color="white" />
+                </TouchableOpacity>
+            </View>
         </View>
     )
 }
@@ -258,6 +262,13 @@ const styles = StyleSheet.create({
         color: "#A5ADF9",
         fontWeight: "600",
     },
+    colourButton: {
+      height: 75,
+      width: 75,
+      borderRadius: 40,
+      justifyContent: "center",
+      alignItems: "center",
+    }
 });
 
 const mapDispatch = { setUser, setAccentColour, setSystemFont, setLoading, setTheme };

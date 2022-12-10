@@ -27,7 +27,7 @@ const screenOptions = (route, color) => {
   return <Ionicons name={iconName} color={color} size={24} />;
 };
 
-function MainTabNavigator({systemFont}) {
+function MainTabNavigator({systemFont, accentColour}) {
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
@@ -43,10 +43,18 @@ function MainTabNavigator({systemFont}) {
             fontWeight: "bold",
             fontSize: 25,
             fontFamily: systemFont
-          },
+          },tabBarActiveTintColor:`${accentColour}`
         }}
       />
-      <Tab.Screen name="Profile" component={Profile} />
+      <Tab.Screen name="Profile" component={Profile} 
+      options={{
+          headerTitleAlign: "left",
+          headerTitleStyle: {
+            fontWeight: "bold",
+            fontSize: 25,
+            fontFamily: systemFont
+          },tabBarActiveTintColor:`${accentColour}`
+        }} />
       <Tab.Screen
         name="Settings"
         component={Settings}
@@ -56,7 +64,7 @@ function MainTabNavigator({systemFont}) {
             fontWeight: "bold",
             fontSize: 25,
             fontFamily: systemFont
-          },
+          },tabBarActiveTintColor:`${accentColour}`
         }}
       />
     </Tab.Navigator>
