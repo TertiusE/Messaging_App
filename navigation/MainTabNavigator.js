@@ -1,12 +1,12 @@
 import React from "react";
-import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import Home from "../screens/Home";
 import Message from "../screens/Message";
 import Profile from "../screens/Profile";
 import Settings from "../screens/Settings";
-
+import { setUser, setAccentColour, setSystemFont, setLoading, setTheme } from "../redux/actions";
+import { connect } from "react-redux";
 
 const Tab = createBottomTabNavigator();
 
@@ -27,7 +27,7 @@ const screenOptions = (route, color) => {
   return <Ionicons name={iconName} color={color} size={24} />;
 };
 
-function MainTabNavigator() {
+function MainTabNavigator({systemFont}) {
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
@@ -42,6 +42,7 @@ function MainTabNavigator() {
           headerTitleStyle: {
             fontWeight: "bold",
             fontSize: 25,
+            fontFamily: systemFont
           },
         }}
       />
@@ -54,6 +55,7 @@ function MainTabNavigator() {
           headerTitleStyle: {
             fontWeight: "bold",
             fontSize: 25,
+            fontFamily: systemFont
           },
         }}
       />
@@ -61,4 +63,13 @@ function MainTabNavigator() {
   );
 }
 
-export default MainTabNavigator;
+const mapDispatch = { setUser, setAccentColour, setSystemFont, setLoading, setTheme };
+const mapState = (store) => ({
+    user: store.dataReducer.user,
+    accentColour: store.dataReducer.accentColour,
+    systemFont: store.dataReducer.systemFont,
+    systemTheme: store.dataReducer.systemTheme,
+    isLoading: store.dataReducer.isLoading
+});
+
+export default connect(mapState, mapDispatch)(MainTabNavigator);

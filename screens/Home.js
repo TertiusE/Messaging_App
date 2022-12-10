@@ -38,7 +38,7 @@ const renderMessageItem = ({ item }) => (
 );
 
 
-const Home = ({ user, setUser, setAccentColour, setSystemFont, systemTheme }) => {
+const Home = ({ user, setUser, setAccentColour, setSystemFont, systemTheme, systemFont }) => {
     const navigation = useNavigation();
     const [text, setText] = useState("");
     const [showModal, setModal] = useState(false)
@@ -152,7 +152,7 @@ const Home = ({ user, setUser, setAccentColour, setSystemFont, systemTheme }) =>
                         <Image style={{ height: 60, width: 60 }} source={Profile} />
                         <View style={styles.itemSection}>
                             <View style={styles.itemHeader}>
-                                <Text style={styles.itemName}>{fName} {lName}</Text>
+                                <Text style={[styles.itemName, {fontFamily:systemFont}]}>{fName} {lName}</Text>
                             </View>
                         </View>
                     </View>
