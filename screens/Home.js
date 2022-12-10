@@ -15,9 +15,28 @@ const auth = getAuth(fireApp)
 const db = getFirestore(fireApp)
 
 function MessageItem({ fName, lName, time, message, otherUser }) {
-    const state= store.getState();
+    const state = store.getState();
     const systemTheme = state.dataReducer.systemTheme
     const accentColour = state.dataReducer.accentColour
+    const user = state.dataReducer.user
+    let [m, setM] = useState({sent_at: "", text: ""})
+    useEffect(() => {
+        let allMessages = [];
+        const userRef = onSnapshot(doc(db, "conversations", otherUser.uid), (doc) => {
+            doc.data().messages.forEach((element) => {
+                if (
+                    (element.sent_to === user.uid && element.sent_by === otherUser.uid) ||
+                    (element.sent_to === otherUser.uid && element.sent_by === user.uid)
+                ) {
+                    allMessages.push(element);
+                }
+            });
+            allMessages = allMessages.sort((m1, m2) => (m1.sent_at < m2.sent_at) ? 1 : (m1.sent_at > m2.sent_at) ? -1 : 0)
+            if (allMessages != []){
+                setM({sent_at:new Date(allMessages.at(0).sent_at).toLocaleTimeString([], {hour: 'numeric', minute:'2-digit'}), text:allMessages.at(0).text})
+            }
+            
+        })}, [])
 
     const navigation = useNavigation();
     return (
@@ -30,9 +49,9 @@ function MessageItem({ fName, lName, time, message, otherUser }) {
                 <View style={styles.itemSection}>
                     <View style={styles.itemHeader}>
                         <Text style={systemTheme == 'light' ? styles.itemName : styles.itemName__dark}>{fName} {lName}</Text>
-                        <Text style={[styles.itemTime, {color: accentColour}]}>{time}</Text>
+                        <Text style={[styles.itemTime, { color: accentColour }]}>{m.sent_at}</Text>
                     </View>
-                    <Text style={styles.itemMessage}>{message}</Text>
+                    <Text style={styles.itemMessage}>{m.text}</Text>
                 </View>
             </View>
         </TouchableHighlight>
@@ -40,7 +59,7 @@ function MessageItem({ fName, lName, time, message, otherUser }) {
 }
 
 const renderMessageItem = ({ item }) => (
-    <MessageItem fName={item.fName} lName={item.lName} time="3:28pm" message="Random Message" otherUser={item} systemTheme/>
+    <MessageItem fName={item.fName} lName={item.lName} time="3:28pm" message="Random Message" otherUser={item} systemTheme />
 );
 
 
@@ -202,7 +221,7 @@ const Home = ({ user, setUser, setAccentColour, setSystemFont, systemTheme, syst
             <TextInput
                 style={systemTheme == 'light' ? styles.input : styles.input__dark}
                 placeholder="Search"
-                placeholderTextColor={systemTheme == 'light' ? 'black': 'white'}
+                placeholderTextColor={systemTheme == 'light' ? 'black' : 'white'}
                 value={text}
                 onChangeText={setText}
             />
@@ -213,7 +232,7 @@ const Home = ({ user, setUser, setAccentColour, setSystemFont, systemTheme, syst
             />
             <FullView />
 
-            <View style={{position:"absolute", right: 15, bottom: 15}}>
+            <View style={{ position: "absolute", right: 15, bottom: 15 }}>
                 <TouchableOpacity
                     style={[styles.colourButton, { backgroundColor: accentColour }]}
                     onPress={() => { setModal(!showModal) }}
