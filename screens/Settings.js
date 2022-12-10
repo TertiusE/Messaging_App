@@ -61,7 +61,7 @@ const Settings = ({ user, isLoading, accentColour, systemFont, setLoading, setAc
   const [isEnabled, setIsEnabled] = useState(false);
   const toggleSwitch = () => setIsEnabled(!isEnabled);
   const [colorTheme, setColorTheme] = useState(user.accentColour);
-  const [font, setFont] = useState(null);
+  const [font, setFont] = useState(user.systemFont);
   const [fontOpen, setFontOpen] = useState(false);
 
   let updateSettings = async () => {
@@ -141,6 +141,7 @@ const Settings = ({ user, isLoading, accentColour, systemFont, setLoading, setAc
             setOpen={setFontOpen}
             setValue={setFont}
             placeholder="Select Font"
+            setItems={fonts}
           />
         </View>
       </View>

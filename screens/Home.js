@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { getAuth} from "firebase/auth";
+import { getAuth } from "firebase/auth";
 import fireApp from "../config/firebase";
 import { setUser, setAccentColour, setSystemFont, setLoading } from "../redux/actions";
 import { connect } from "react-redux";
@@ -103,21 +103,34 @@ const Home = ({ user, setUser, setAccentColour, setSystemFont }) => {
         }
 
         const addToHome = async (otherUser) => {
-            if (!currentUser.conversations.includes(otherUser)) {
+            const contains = (converations, userO) => {
+                let output = false
+                converations.forEach(element => {
+                    if (element.uid === userO.uid) {
+                        output = true
+                    }
+                })
+                return output
+            }
+
+            if (!contains(currentUser.conversations, otherUser)) {
                 const userRef = doc(db, "users", currentUser.uid)
                 const userUnion = await updateDoc(userRef, {
                     conversations: arrayUnion(otherUser)
                 })
             }
-            if (!otherUser.conversations.includes(currentUser)) {
+
+            if (!contains(otherUser.conversations, currentUser)) {
                 const otherRef = doc(db, "users", otherUser.uid)
                 const otherUnion = await updateDoc(otherRef, {
                     conversations: arrayUnion(currentUser)
                 })
             }
+
+
         }
 
-        function ModalItem({ fName, lName , otherUser}) {
+        function ModalItem({ fName, lName, otherUser }) {
             const navigation = useNavigation();
             return (
                 <TouchableHighlight
