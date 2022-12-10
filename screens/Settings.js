@@ -78,7 +78,6 @@ const Settings = ({ user, isLoading, accentColour, systemFont, setLoading, setAc
     updateSettings().catch(err => console.log(err))
   }
 
-
   const handleColorClick = (colorPressed) => {
     setColorTheme(colorPressed);
   };
