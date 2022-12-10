@@ -45,7 +45,7 @@ const Home = ({ user, setUser, setAccentColour, setSystemFont, systemTheme, syst
     let [currentUser, setCurrent] = useState({})
 
     navigation.setOptions({
-        headerRight: () => <TouchableOpacity onPress={signOut}><Ionicons style={{ marginRight: 10, color: "#5C4DF8" }} name="log-out-outline" size="34" /></TouchableOpacity>
+        headerRight: () => <TouchableOpacity onPress={signOut}><Ionicons style={{ marginRight: 10, color:{accentColour} }} name="log-out-outline" size="34" /></TouchableOpacity>
     })
 
     useEffect(() => {
