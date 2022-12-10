@@ -17,6 +17,7 @@ import { connect } from "react-redux";
 import uuid from "react-native-uuid";
 import fireApp from "../config/firebase";
 import { GiftedChat, Bubble } from "react-native-gifted-chat";
+import { View } from "react-native";
 
 const db = getFirestore(fireApp);
 
@@ -115,20 +116,22 @@ const Message = ({ user, accentColour, systemTheme, systemFont, route }) => {
   }
 
   return (
-    <GiftedChat
-      messages={
-        messageArray == undefined
-          ? console.log("No messaages found.")
-          : messageArray
-      }
-      onInputTextChanged={(text) => handMessageClick(text)}
-      onSend={(message) => onSend(message)}
-      user={{
-        _id: user.uid,
-        name: user.fName,
-        avatar: user.photoUrl,
-      }}
-    />
+    <View style={{backgroundColor:"black",flex:1}}>
+      <GiftedChat
+        messages={
+          messageArray == undefined
+            ? console.log("No messaages found.")
+            : messageArray
+        }
+        onInputTextChanged={(text) => handMessageClick(text)}
+        onSend={(message) => onSend(message)}
+        user={{
+          _id: user.uid,
+          name: user.fName,
+          avatar: user.photoUrl,
+        }}
+      />
+    </View>
   );
 };
 
