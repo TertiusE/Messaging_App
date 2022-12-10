@@ -45,7 +45,7 @@ function MainTabNavigator() {
           headerTitleAlign: "left",
           headerTitleStyle: {
             fontWeight: "bold",
-            fontSize: 30,
+            fontSize: 25,
           },
         }}
       />
@@ -57,7 +57,7 @@ function MainTabNavigator() {
           headerTitleAlign: "left",
           headerTitleStyle: {
             fontWeight: "bold",
-            fontSize: 30,
+            fontSize: 25,
           },
         }}
       />
