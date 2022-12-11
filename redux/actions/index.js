@@ -1,4 +1,4 @@
-import { UPDATE_USER, LOADING_STATE, UPDATE_ACCENT_COLOR, UPDATE_FONT, UPDATE_THEME } from "../actionTypes"
+import { UPDATE_USER, LOADING_STATE, UPDATE_ACCENT_COLOR, UPDATE_FONT, UPDATE_THEME, UPDATE_DATE_OF_BIRTH } from "../actionTypes"
 
 
 export const setUser = (i) => {
@@ -32,6 +32,13 @@ export const setAccentColour = (i) => {
 export const setTheme = (i) => {
     return {
     type: UPDATE_THEME,
+    payload:  i
+    }
+}
+
+export const setDateOfBirth = (i) => {
+    return {
+    type: UPDATE_DATE_OF_BIRTH,
     payload:  i
     }
 }

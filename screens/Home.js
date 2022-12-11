@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { getAuth } from "firebase/auth";
 import fireApp from "../config/firebase";
-import { setUser, setAccentColour, setSystemFont, setLoading, setTheme } from "../redux/actions";
+import { setUser, setAccentColour, setSystemFont, setLoading, setTheme, setDateOfBirth } from "../redux/actions";
 import { connect } from "react-redux";
 import { View, Text, SafeAreaView, FlatList, StyleSheet, Image, TextInput, TouchableHighlight, TouchableOpacity, Button, Modal } from "react-native";
 import { useNavigation } from '@react-navigation/native';
@@ -63,7 +63,7 @@ const renderMessageItem = ({ item }) => (
 );
 
 
-const Home = ({ user, setUser, setAccentColour,setTheme, setSystemFont, systemTheme, systemFont, accentColour }) => {
+const Home = ({ user,setDateOfBirth, setUser, setAccentColour,setTheme, setSystemFont, systemTheme, systemFont, accentColour }) => {
     const navigation = useNavigation();
     const [text, setText] = useState("");
     const [showModal, setModal] = useState(false)
@@ -77,6 +77,7 @@ const Home = ({ user, setUser, setAccentColour,setTheme, setSystemFont, systemTh
                 setAccentColour(doc.data().accentColour)
                 setSystemFont(doc.data().systemFont)
                 setTheme(doc.data().systemTheme)
+                setDateOfBirth(doc.data().dateOfBirth)
             });
         }
         fetchData()
@@ -156,7 +157,6 @@ const Home = ({ user, setUser, setAccentColour,setTheme, setSystemFont, systemTh
                     conversations: arrayUnion(currentUser)
                 })
             }
-
 
         }
 
@@ -247,13 +247,14 @@ const Home = ({ user, setUser, setAccentColour,setTheme, setSystemFont, systemTh
 }
 
 
-const mapDispatch = { setUser, setAccentColour, setSystemFont, setLoading, setTheme };
+const mapDispatch = { setUser, setAccentColour, setSystemFont, setLoading, setTheme, setDateOfBirth };
 const mapState = (store) => ({
     user: store.dataReducer.user,
     accentColour: store.dataReducer.accentColour,
     systemFont: store.dataReducer.systemFont,
     systemTheme: store.dataReducer.systemTheme,
-    isLoading: store.dataReducer.isLoading
+    isLoading: store.dataReducer.isLoading,
+    dateOfBirth: store.dataReducer.dateOfBirth
 });
 
 export default connect(mapState, mapDispatch)(Home);

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Platform, SafeAreaView, Text, StyleSheet, Image, Button, View, TextInput, TouchableOpacity, Modal, KeyboardAvoidingView } from "react-native";
-import { setUser, setAccentColour, setSystemFont, setLoading, setTheme } from "../redux/actions";
+import { setUser, setAccentColour, setSystemFont, setLoading, setTheme, setDateOfBirth } from "../redux/actions";
 import { connect } from "react-redux";
 import styles from '../stylesheets/profile.component';
 import store from '../redux/store/index';
@@ -8,10 +8,10 @@ import RNDateTimePicker from '@react-native-community/datetimepicker';
 import { useIsFocused } from '@react-navigation/native'
 
 
-const Profile = ({ user, setUser, setAccentColour, setSystemFont, setLoading }) => {
+const Profile = ({ user, setUser, setAccentColour, setSystemFont, setLoading, setDateOfBirth }) => {
   const [fName, setfName] = useState(user.fName);
   const [lName, setlName] = useState(user.lName);
-  const [birthDate, setBirthDate] = useState(new Date());
+  const [birthDate, setBirthDate] = useState(new Date(user.dateOfBirth));
   const [open, setOpen] = useState(false)
   const [profileImg, setProfileImg] = useState("");
   const [modalVisible, setModalVisible] = useState(false);
@@ -21,24 +21,22 @@ const Profile = ({ user, setUser, setAccentColour, setSystemFont, setLoading }) 
   const systemTheme = state.dataReducer.systemTheme
   const accentColour = state.dataReducer.accentColour
 
+  let updateSettings = async () => {
+    const userRef = doc(db, "users", user.uid);
+    const userUnion = await updateDoc(userRef, {
+      fName: fName,
+      lName: lName,
+      dateOfBirth: birthDate.getTime()
+    });
+  }
+
   useEffect(()=>{
-    setBirthDate(new Date())
+    setDateOfBirth(user.dateOfBirth)
     setfName(user.fName)
     setlName(user.lName)
   },[isFocused])
   /* Dispatch User Info changes */
   const onSaveChangesClicked = () => {
-    let userChanges = {};
-    // Validate user input before storing
-    if (fName) {
-      userChanges.firstName = fName;
-    }
-    if (lName) {
-      userChanges.lastName = fName;
-    }
-    if (birthDate) {
-      userChanges.birthDate = birthDate;
-    }
     if (/\.(jpg|jpeg|png|webp|avif|gif|svg)$/.test(profileImg)) {
       userChanges.profileImage = profileImg;
       setProfileImg(profileImg)
@@ -124,7 +122,7 @@ const Profile = ({ user, setUser, setAccentColour, setSystemFont, setLoading }) 
                 onChange={onChange}
                 themeVariant={systemTheme}
                 maximumDate={new Date()}
-                style={{position:"absolute",left:"41%",top:15 }}
+                style={{position:"absolute",left:"40%",top:15 }}
               />
             </View>
           </View>
@@ -137,13 +135,16 @@ const Profile = ({ user, setUser, setAccentColour, setSystemFont, setLoading }) 
   );
 };
 
-const mapDispatch = { setUser, setAccentColour, setSystemFont, setLoading, setTheme };
+
+
+const mapDispatch = { setUser, setAccentColour, setSystemFont, setLoading, setTheme, setDateOfBirth };
 const mapState = (store) => ({
-  user: store.dataReducer.user,
-  accentColour: store.dataReducer.accentColour,
-  systemFont: store.dataReducer.systemFont,
-  systemTheme: store.dataReducer.systemTheme,
-  isLoading: store.dataReducer.isLoading
+    user: store.dataReducer.user,
+    accentColour: store.dataReducer.accentColour,
+    systemFont: store.dataReducer.systemFont,
+    systemTheme: store.dataReducer.systemTheme,
+    isLoading: store.dataReducer.isLoading,
+    dateOfBirth: store.dataReducer.dateOfBirth
 });
 
 

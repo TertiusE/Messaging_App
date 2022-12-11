@@ -1,4 +1,4 @@
-import { UPDATE_USER, LOADING_STATE, UPDATE_ACCENT_COLOR, UPDATE_FONT, UPDATE_THEME } from "../actionTypes"
+import { UPDATE_USER, LOADING_STATE, UPDATE_ACCENT_COLOR, UPDATE_FONT, UPDATE_THEME, UPDATE_DATE_OF_BIRTH } from "../actionTypes"
 
 
 const initialState = {
@@ -6,7 +6,8 @@ const initialState = {
     user: null,
     accentColour: '#5C4DF8',
     systemFont: null,
-    systemTheme: "light"
+    systemTheme: "light",
+    dateOfBirth: new Date()
 }
 
 
@@ -21,6 +22,8 @@ export default function(state = initialState, action) {
         return { ...state, systemFont:action.payload}
     }else if(UPDATE_THEME == action.type){
         return { ...state, systemTheme:action.payload}
+    }else if(UPDATE_DATE_OF_BIRTH == action.type){
+        return { ...state, dateOfBirth:action.payload}
     }
     return state
 }
