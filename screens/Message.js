@@ -1,10 +1,11 @@
-import { React, useState, useEffect, useCallback } from "react";
+import { React, useState, useEffect } from "react";
 import {
   onSnapshot,
   doc,
   getFirestore,
   updateDoc,
   arrayUnion,
+  arrayRemove
 } from "firebase/firestore";
 import {
   setUser,
@@ -16,7 +17,7 @@ import {
 import { connect } from "react-redux";
 import uuid from "react-native-uuid";
 import fireApp from "../config/firebase";
-import { Keyboard, Button, Platform, KeyboardAvoidingView, View, FlatList, Text, StyleSheet, SafeAreaView, TextInput, TouchableWithoutFeedback, TouchableOpacity } from "react-native";
+import { Keyboard, Alert, Platform, KeyboardAvoidingView, View, FlatList, Text, StyleSheet, SafeAreaView, TextInput, TouchableWithoutFeedback, TouchableOpacity } from "react-native";
 import { Ionicons } from '@expo/vector-icons';
 import styles from '../stylesheets/message.component';
 
@@ -91,38 +92,61 @@ const Message = ({ user, accentColour, systemTheme, systemFont, route }) => {
     setText("");
   };
 
+  let deleteMessage = async (m) => {
+    console.log(m)
+    if (m.sent_by == user.uid) {
+      const userRef = doc(db, "conversations", user.uid);
+      const userUnion = await updateDoc(userRef, {
+        messages: arrayRemove(m),
+      });
 
-  const MessageBubble = ({ text, sent_by, time, id }) => {
+      const otherRef = doc(db, "conversations", otherUser.uid);
+      const unionRes = await updateDoc(otherRef, {
+        messages: arrayRemove(m),
+      });
+    }
+  };
+
+
+  const MessageBubble = ({ text, sent_by, time, id, message }) => {
+    let alertOptions = [
+      { text: "Delete", onPress: () => { deleteMessage(message) } },
+      { text: "Cancel", onPress: () => {} }
+    ]
     if (messageID.includes(id)) {
       return (
         <View>
-          <Text style={[styles.messageDate,{color: systemTheme=="light"?"black":"white"}]}>{arrayDates[messageID.indexOf(id)]}</Text>
-          <View style={[styles.messageBubble, { alignSelf: user.uid == sent_by ? "flex-end" : "flex-start", backgroundColor: user.uid == sent_by ? accentColour : "grey" }]}>
-            <Text style={{ fontFamily: systemFont, fontSize: 17, color: systemTheme=="light"?"black":"white" }}>{text}</Text>
-            <Text style={{ fontSize: 10, alignSelf: user.uid == sent_by ? "flex-end" : "flex-start", paddingTop: 5, color: systemTheme=="light"?"black":"white" }}>{new Date(time).toLocaleTimeString([], { hour: "numeric", minute: "numeric" })}</Text>
-          </View>
+          <Text style={[styles.messageDate, { color: systemTheme == "light" ? "black" : "white" }]}>{arrayDates[messageID.indexOf(id)]}</Text>
+          <TouchableWithoutFeedback onLongPress={() => {user.uid == sent_by ? Alert.alert("Options", "", alertOptions) : null}}>
+            <View style={[styles.messageBubble, { alignSelf: user.uid == sent_by ? "flex-end" : "flex-start", backgroundColor: user.uid == sent_by ? accentColour : "grey" }]}>
+              <Text style={{ fontFamily: systemFont, fontSize: 17, color: systemTheme == "light" ? "black" : "white" }}>{text}</Text>
+              <Text style={{ fontSize: 10, alignSelf: user.uid == sent_by ? "flex-end" : "flex-start", paddingTop: 5, color: systemTheme == "light" ? "black" : "white" }}>{new Date(time).toLocaleTimeString([], { hour: "numeric", minute: "numeric" })}</Text>
+            </View>
+          </TouchableWithoutFeedback>
         </View>
       )
     } else {
       return (
-        <View style={[styles.messageBubble, { alignSelf: user.uid == sent_by ? "flex-end" : "flex-start", backgroundColor: user.uid == sent_by ? accentColour : "grey" }]}>
-          <Text style={{ fontFamily: systemFont, fontSize: 17, color: systemTheme=="light"?"black":"white" }}>{text}</Text>
-          <Text style={{ fontSize: 10, alignSelf: user.uid == sent_by ? "flex-end" : "flex-start", paddingTop: 5, color: systemTheme=="light"?"black":"white" }}>{new Date(time).toLocaleTimeString([], { hour: "numeric", minute: "numeric" })}</Text>
-        </View>
+        <TouchableWithoutFeedback onLongPress={() => {user.uid == sent_by ? Alert.alert("Options", "", alertOptions) : null}}>
+          <View style={[styles.messageBubble, { alignSelf: user.uid == sent_by ? "flex-end" : "flex-start", backgroundColor: user.uid == sent_by ? accentColour : "grey" }]}>
+            <Text style={{ fontFamily: systemFont, fontSize: 17, color: systemTheme == "light" ? "black" : "white" }}>{text}</Text>
+            <Text style={{ fontSize: 10, alignSelf: user.uid == sent_by ? "flex-end" : "flex-start", paddingTop: 5, color: systemTheme == "light" ? "black" : "white" }}>{new Date(time).toLocaleTimeString([], { hour: "numeric", minute: "numeric" })}</Text>
+          </View>
+        </TouchableWithoutFeedback>
       )
     }
 
   }
 
   const renderMessageBubble = ({ item }) => (
-    <MessageBubble text={item.text} sent_by={item.sent_by} time={item.sent_at} id={item.id} />
+    <MessageBubble text={item.text} sent_by={item.sent_by} time={item.sent_at} id={item.id} message={item} />
   );
 
   return (
 
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
-      style={systemTheme=="light" ? styles.mainContainer : styles.mainContainer__dark}
+      style={systemTheme == "light" ? styles.mainContainer : styles.mainContainer__dark}
       keyboardVerticalOffset={110}
     >
       <SafeAreaView style={{ flex: 1 }}>
