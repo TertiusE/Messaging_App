@@ -6,11 +6,13 @@ import { SafeAreaView, StyleSheet, ActivityIndicator } from 'react-native';
 import { LogBox } from 'react-native';
 import { useFonts } from 'expo-font';
 import { useEffect, useState } from 'react';
+import * as SplashScreen from 'expo-splash-screen';
 
 
 export default function App() {
   LogBox.ignoreLogs(['AsyncStorage has been extracted from react-native core and will be removed in a future release.']);
   const [isLoading, setLoading] = useState(true)
+  SplashScreen.preventAutoHideAsync();
   const [fontsLoaded] = useFonts({
     'Caveat': require("./assets/fonts/Caveat/Caveat-Bold.ttf"),
     'Roboto': require("./assets/fonts/Roboto/Roboto-Regular.ttf"),
@@ -21,15 +23,12 @@ export default function App() {
   useEffect(() => {
     if (fontsLoaded) {
       setLoading(false)
+      SplashScreen.hideAsync();
     }
   }, [fontsLoaded])
 
   if (isLoading) {
-    return (
-      <SafeAreaView style={styles.container}>
-        <ActivityIndicator size="large" color="#2980B9" />
-      </SafeAreaView>
-    );
+    return null
   }
   return (
     <Provider store={store}>
@@ -37,12 +36,3 @@ export default function App() {
     </Provider>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent:"center",
-    alignItems:"center",
-    backgroundColor: "white",
-  }
-})
