@@ -34,7 +34,7 @@ function MessageItem({ fName, lName, time, message, otherUser }) {
             });
             allMessages = allMessages.sort((m1, m2) => (m1.sent_at < m2.sent_at) ? 1 : (m1.sent_at > m2.sent_at) ? -1 : 0)
             if (allMessages.length !== 0) {
-                setM({ sent_at: new Date(allMessages.at(0).sent_at).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }), text: allMessages.at(0).text })
+                setM({ sent_at: new Date(allMessages[0].sent_at).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }), text: allMessages[0].text })
             }
 
         })

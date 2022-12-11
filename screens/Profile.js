@@ -6,6 +6,8 @@ import styles from '../stylesheets/profile.component';
 import store from '../redux/store/index';
 import RNDateTimePicker from '@react-native-community/datetimepicker';
 import { useIsFocused } from '@react-navigation/native'
+import { doc, updateDoc, getFirestore } from "firebase/firestore";
+import fireApp from "../config/firebase";
 
 
 const Profile = ({ user, setUser, setAccentColour, setSystemFont, setLoading, setDateOfBirth, systemFont }) => {
@@ -16,6 +18,8 @@ const Profile = ({ user, setUser, setAccentColour, setSystemFont, setLoading, se
   const [profileImg, setProfileImg] = useState("");
   const [modalVisible, setModalVisible] = useState(false);
   const isFocused = useIsFocused()
+  const db = getFirestore(fireApp);
+
 
   const state = store.getState();
   const systemTheme = state.dataReducer.systemTheme
@@ -90,8 +94,8 @@ const Profile = ({ user, setUser, setAccentColour, setSystemFont, setLoading, se
         ) : (<Text style={systemTheme == 'light' ? styles.header : styles.header__dark}>FirstName LastName</Text>)}
 
         <TouchableWithoutFeedback onPress={() => setModalVisible(true)}>
-          <View style={{marginTop:5}}>
-            <Text style={{fontFamily:systemFont, color:accentColour, fontSize:18}}>Change Photo</Text>
+          <View style={{ marginTop: 5 }}>
+            <Text style={{ fontFamily: systemFont, color: accentColour, fontSize: 18 }}>Change Photo</Text>
           </View>
         </TouchableWithoutFeedback>
         <View style={styles.inputContainer}>
@@ -119,7 +123,7 @@ const Profile = ({ user, setUser, setAccentColour, setSystemFont, setLoading, se
               <RNDateTimePicker
                 value={birthDate}
                 mode="date"
-                is24Hour={true}
+                is24Hour={false}
                 onChange={onChange}
                 themeVariant={systemTheme}
                 maximumDate={new Date()}
@@ -127,7 +131,7 @@ const Profile = ({ user, setUser, setAccentColour, setSystemFont, setLoading, se
               />
             </View>
           </View>
-          <TouchableOpacity style={[systemTheme == 'light' ? styles.saveButton : styles.saveButton__dark, { backgroundColor: accentColour, marginTop: 50 }]} onPress={() => onSaveChangesClicked()}>
+          <TouchableOpacity style={[systemTheme == 'light' ? styles.saveButton : styles.saveButton__dark, { backgroundColor: accentColour, marginTop: 50 }]} onPress={() => updateSettings()}>
             <Text style={[styles.saveText, { fontFamily: systemFont }]}>Save Changes</Text>
           </TouchableOpacity>
         </View>
