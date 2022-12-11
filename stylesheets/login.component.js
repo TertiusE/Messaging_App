@@ -8,7 +8,7 @@ export default StyleSheet.create({
     alignContent:"center"
   },
   inputContainer: {
-    justifyContent: "stretch",
+    justifyContent: "space-between",
     alignItems: "stretch",
     width: "80%",
   },
@@ -38,7 +38,7 @@ export default StyleSheet.create({
     fontSize: 16,
   },
   inputLabel: {
-    justifyContent: "stretch",
+    justifyContent: "space-between",
     alignSelf: "stretch",
     color: "#A0A0A0",
     fontWeight: "500",

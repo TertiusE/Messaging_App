@@ -30,7 +30,7 @@ export default StyleSheet.create({
     color:'white'
   },
   inputContainer: {
-    justifyContent: "stretch",
+    justifyContent: "space-between",
     alignItems: "stretch",
     width: "80%",
     flex: 0.8,
@@ -67,23 +67,6 @@ export default StyleSheet.create({
     paddingBottom: 5,
     fontSize: 16,
     fontWeight: "500",
-  },
-  bDateContainer: {
-    flex: 1,
-    alignItems: "stretch",
-    justifyContent: "stretch",
-  },
-  bDateItem: {
-    height: 50,
-    flexDirection: "row",
-    alignSelf: "stretch",
-    justifySelf: "stretch",
-  },
-  inputBDate: {
-    alignSelf: "center",
-    textAlign: "center",
-    flex: 1,
-    margin: 5,
   },
   saveButton: {
     width: "100%",

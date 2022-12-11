@@ -3,7 +3,7 @@ import { getAuth } from "firebase/auth";
 import fireApp from "../config/firebase";
 import { setUser, setAccentColour, setSystemFont, setLoading, setTheme, setDateOfBirth } from "../redux/actions";
 import { connect } from "react-redux";
-import { View, Text, SafeAreaView, FlatList, StyleSheet, Image, TextInput, TouchableHighlight, TouchableOpacity, Button, Modal } from "react-native";
+import { Platform, View, Text, SafeAreaView, FlatList, StyleSheet, Image, TextInput, TouchableHighlight, TouchableOpacity, Button, Modal } from "react-native";
 import { useNavigation } from '@react-navigation/native';
 import { onSnapshot, collection, query, where, doc, orderBy, limit, getFirestore, getDocs, updateDoc, arrayUnion } from "firebase/firestore";
 import Profile from "../assets/profile-icon.png";
@@ -19,7 +19,8 @@ function MessageItem({ fName, lName, time, message, otherUser }) {
     const systemTheme = state.dataReducer.systemTheme
     const accentColour = state.dataReducer.accentColour
     const user = state.dataReducer.user
-    let [m, setM] = useState({sent_at: "", text: ""})
+    const systemFont = state.dataReducer.systemFont
+    let [m, setM] = useState({ sent_at: "", text: "" })
     useEffect(() => {
         let allMessages = [];
         const userRef = onSnapshot(doc(db, "conversations", otherUser.uid), (doc) => {
@@ -32,11 +33,12 @@ function MessageItem({ fName, lName, time, message, otherUser }) {
                 }
             });
             allMessages = allMessages.sort((m1, m2) => (m1.sent_at < m2.sent_at) ? 1 : (m1.sent_at > m2.sent_at) ? -1 : 0)
-            if (allMessages.length !== 0){
-                setM({sent_at:new Date(allMessages.at(0).sent_at).toLocaleTimeString([], {hour: 'numeric', minute:'2-digit'}), text:allMessages.at(0).text})
+            if (allMessages.length !== 0) {
+                setM({ sent_at: new Date(allMessages.at(0).sent_at).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }), text: allMessages.at(0).text })
             }
-            
-        })}, [])
+
+        })
+    }, [])
 
     const navigation = useNavigation();
     return (
@@ -48,10 +50,10 @@ function MessageItem({ fName, lName, time, message, otherUser }) {
                 <Image style={{ height: 60, width: 60 }} source={Profile} />
                 <View style={styles.itemSection}>
                     <View style={styles.itemHeader}>
-                        <Text style={systemTheme == 'light' ? styles.itemName : styles.itemName__dark}>{fName} {lName}</Text>
-                        <Text style={[styles.itemTime, { color: accentColour }]}>{m.sent_at}</Text>
+                        <Text style={[systemTheme == 'light' ? styles.itemName : styles.itemName__dark, { fontFamily: systemFont }]}>{fName} {lName}</Text>
+                        <Text style={[styles.itemTime, { color: accentColour, fontFamily: systemFont }]}>{m.sent_at}</Text>
                     </View>
-                    <Text style={styles.itemMessage}>{m.text}</Text>
+                    <Text style={[styles.itemMessage, { fontFamily: systemFont }]}>{m.text.length > 20 ? m.text.slice(0,23)+"..." : m.text}</Text>
                 </View>
             </View>
         </TouchableHighlight>
@@ -59,12 +61,11 @@ function MessageItem({ fName, lName, time, message, otherUser }) {
 }
 
 const renderMessageItem = ({ item }) => (
-    <MessageItem fName={item.fName} lName={item.lName} time="3:28pm" message="Random Message" otherUser={item} systemTheme />
+    <MessageItem fName={item.fName} lName={item.lName} otherUser={item} systemTheme />
 );
 
 
-const Home = ({ user,setDateOfBirth, setUser, setAccentColour,setTheme, setSystemFont, systemTheme, systemFont, accentColour }) => {
-    const navigation = useNavigation();
+const Home = ({ user, setDateOfBirth, setUser, setAccentColour, setTheme, setSystemFont, systemTheme, systemFont, accentColour }) => {
     const [text, setText] = useState("");
     const [showModal, setModal] = useState(false)
     let [currentUser, setCurrent] = useState({})
@@ -170,11 +171,11 @@ const Home = ({ user,setDateOfBirth, setUser, setAccentColour,setTheme, setSyste
                         setModal(!showModal)
                     }}
                 >
-                    <View style={styles.itemContainer}>
+                    <View style={systemTheme == 'light' ? styles.itemContainer : styles.itemContainer__dark}>
                         <Image style={{ height: 60, width: 60 }} source={Profile} />
                         <View style={styles.itemSection}>
-                            <View style={styles.itemHeader}>
-                                <Text style={[styles.itemName, { fontFamily: systemFont }]}>{fName} {lName}</Text>
+                            <View style={[styles.itemHeader, { alignItems: "center" }]}>
+                                <Text style={[systemTheme == 'light' ? styles.itemName : styles.itemName__dark, { fontFamily: systemFont, fontSize: 25, alignSelf: "center" }]}>{fName} {lName}</Text>
                             </View>
                         </View>
                     </View>
@@ -188,21 +189,39 @@ const Home = ({ user,setDateOfBirth, setUser, setAccentColour,setTheme, setSyste
 
         return (
             <Modal animationType='slide' transparent={false} visible={showModal} >
-                <SafeAreaView>
-                    <TextInput
-                        style={styles.input}
-                        placeholder="Search"
-                        value={modalText}
-                        onChangeText={setModalText}
-                        keyboardAppearance={systemTheme}
-                    />
-                    <Button title="Search" onPress={() => { searchUsers() }} />
+                <SafeAreaView style={systemTheme === "light" ? styles.mainContainer : styles.mainContainer__dark}>
+                    <View style={{ flexDirection: "row" }}>
+                        <View style={{flex:1}}>
+                            <TextInput
+                                style={systemTheme == 'light' ? styles.input : styles.input__dark}
+                                placeholderTextColor={systemTheme == 'light' ? 'black' : 'white'}
+                                placeholder="Search"
+                                value={modalText}
+                                onChangeText={setModalText}
+                                keyboardAppearance={systemTheme}
+                            />
+                        </View>
+                        <View style={{position:"absolute",right:25,top:24}}>
+                            <TouchableOpacity
+                                onPress={() => { searchUsers() }}
+                            >
+                                <Ionicons name="search" size={30} color={accentColour}/>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
                     <FlatList
                         data={modalData}
                         renderItem={renderModalItem}
                         keyExtractor={(item) => item.uid}
                     />
-                    <Button title="Close" onPress={() => { setModal(!showModal) }} />
+                    <View style={{ position: "absolute", right: 15, bottom: 70 }}>
+                        <TouchableOpacity
+                            style={[styles.colourButton, { backgroundColor: accentColour }]}
+                            onPress={() => { setModal(!showModal) }}
+                        >
+                            <Ionicons name="close" size={50} color="white" />
+                        </TouchableOpacity>
+                    </View>
 
                 </SafeAreaView>
             </Modal>

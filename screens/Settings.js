@@ -1,5 +1,5 @@
 import { React, useState, useEffect } from "react";
-import { Text, View, StyleSheet, Switch, TouchableOpacity, SafeAreaView } from "react-native";
+import { Platform, Text, View, StyleSheet, Switch, TouchableOpacity, SafeAreaView } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { setUser, setAccentColour, setSystemFont, setLoading, setTheme } from "../redux/actions";
 import { connect } from "react-redux";
@@ -68,11 +68,12 @@ const Settings = ({ user, isLoading, accentColour, systemFont, systemTheme, setL
   const isFocused = useIsFocused()
 
 
-  useEffect(()=>{
+  useEffect(() => {
     setIsEnabled(user.systemTheme == 'dark')
     setFont(user.systemFont)
     setColorTheme(user.accentColour)
-  },[isFocused])
+    setFontOpen(false)
+  }, [isFocused])
 
   let updateSettings = async () => {
     const userRef = doc(db, "users", user.uid);
@@ -140,11 +141,14 @@ const Settings = ({ user, isLoading, accentColour, systemFont, systemTheme, setL
               fontSize: 15,
               color: 'grey'
             }}
+            dropDownContainerStyle={{
+              backgroundColor: systemTheme == 'light' ? "white":"#2B2A2E"
+            }}
           />
         </View>
       </View>
       <TouchableOpacity style={[systemTheme == 'light' ? styles.saveButton : styles.saveButton__dark, { backgroundColor: accentColour }]} onPress={() => onSaveChanges()}>
-        <Text style={styles.saveText}>Save Changes</Text>
+        <Text style={[styles.saveText, {fontFamily:systemFont}]}>Save Changes</Text>
       </TouchableOpacity>
     </View>
   );

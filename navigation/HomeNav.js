@@ -4,15 +4,27 @@ import Profile from "../screens/Profile";
 import Settings from "../screens/Settings";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import MainTabNavigator from "./MainTabNavigator";
+import { connect } from "react-redux";
+import { setUser, setAccentColour, setSystemFont, setLoading, setTheme } from "../redux/actions";
 
 
-var options = {
-  headerTitleAlign: 'left',
 
-}
 const Stack = createNativeStackNavigator();
 
-export default HomeNav = () => {
+function HomeNav({ accentColour, systemFont, systemTheme }) {
+    var options = {
+        headerTitleAlign: 'left',
+        headerTitleStyle: {
+            fontWeight: "bold",
+            fontSize: 20,
+            fontFamily: systemFont,
+            color: systemTheme === 'light' ? 'black' : 'white',
+        },
+        headerStyle: {
+            backgroundColor: systemTheme === 'light' ? 'white' : '#1A1A1B',
+            bottomBorderColor:"white"
+          },
+    }
     return (
         <Stack.Navigator>
             <Stack.Group screenOptions={options}>
@@ -41,3 +53,14 @@ export default HomeNav = () => {
         </Stack.Navigator>
     )
 }
+
+const mapDispatch = { setUser, setAccentColour, setSystemFont, setLoading, setTheme };
+const mapState = (store) => ({
+    user: store.dataReducer.user,
+    accentColour: store.dataReducer.accentColour,
+    systemFont: store.dataReducer.systemFont,
+    systemTheme: store.dataReducer.systemTheme,
+    isLoading: store.dataReducer.isLoading
+});
+
+export default connect(mapState, mapDispatch)(HomeNav);

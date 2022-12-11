@@ -18,6 +18,7 @@ import uuid from "react-native-uuid";
 import fireApp from "../config/firebase";
 import { Keyboard, Button, Platform, KeyboardAvoidingView, View, FlatList, Text, StyleSheet, SafeAreaView, TextInput, TouchableWithoutFeedback, TouchableOpacity } from "react-native";
 import { Ionicons } from '@expo/vector-icons';
+import styles from '../stylesheets/message.component';
 
 const db = getFirestore(fireApp);
 
@@ -41,7 +42,7 @@ const Message = ({ user, accentColour, systemTheme, systemFont, route }) => {
             (element.sent_to === otherUser.uid && element.sent_by === user.uid)
           ) {
             allMessages.push(element);
-            if (!M_DATES.includes(new Date(element.sent_at).toDateString())){
+            if (!M_DATES.includes(new Date(element.sent_at).toDateString())) {
               M_DATES.push(new Date(element.sent_at).toDateString())
               M_ID.push(element.id)
             }
@@ -90,28 +91,27 @@ const Message = ({ user, accentColour, systemTheme, systemFont, route }) => {
     setText("");
   };
 
-  const inputAccessoryViewID = 'uniqueID';
 
   const MessageBubble = ({ text, sent_by, time, id }) => {
     if (messageID.includes(id)) {
       return (
         <View>
-          <Text style={{textAlign:"center",margin:10}}>{arrayDates[messageID.indexOf(id)]}</Text>
-          <View style={{ borderRadius: StyleSheet.hairlineWidth * 15, padding: 12, backgroundColor: "grey", margin: 10, maxWidth: "80%", alignSelf: user.uid == sent_by ? "flex-end" : "flex-start", backgroundColor: user.uid == sent_by ? accentColour : "grey" }}>
-            <Text style={{ fontFamily: systemFont, fontSize: 17 }}>{text}</Text>
-            <Text style={{ fontSize: 10, alignSelf: user.uid == sent_by ? "flex-end" : "flex-start", paddingTop: 5 }}>{new Date(time).toLocaleTimeString([], { hour: "numeric", minute: "numeric" })}</Text>
+          <Text style={[styles.messageDate,{color: systemTheme=="light"?"black":"white"}]}>{arrayDates[messageID.indexOf(id)]}</Text>
+          <View style={[styles.messageBubble, { alignSelf: user.uid == sent_by ? "flex-end" : "flex-start", backgroundColor: user.uid == sent_by ? accentColour : "grey" }]}>
+            <Text style={{ fontFamily: systemFont, fontSize: 17, color: systemTheme=="light"?"black":"white" }}>{text}</Text>
+            <Text style={{ fontSize: 10, alignSelf: user.uid == sent_by ? "flex-end" : "flex-start", paddingTop: 5, color: systemTheme=="light"?"black":"white" }}>{new Date(time).toLocaleTimeString([], { hour: "numeric", minute: "numeric" })}</Text>
           </View>
         </View>
       )
-    }else{
+    } else {
       return (
-        <View style={{ borderRadius: StyleSheet.hairlineWidth * 15, padding: 12, backgroundColor: "grey", margin: 10, maxWidth: "80%", alignSelf: user.uid == sent_by ? "flex-end" : "flex-start", backgroundColor: user.uid == sent_by ? accentColour : "grey" }}>
-          <Text style={{ fontFamily: systemFont, fontSize: 17 }}>{text}</Text>
-          <Text style={{ fontSize: 10, alignSelf: user.uid == sent_by ? "flex-end" : "flex-start", paddingTop: 5 }}>{new Date(time).toLocaleTimeString([], { hour: "numeric", minute: "numeric" })}</Text>
+        <View style={[styles.messageBubble, { alignSelf: user.uid == sent_by ? "flex-end" : "flex-start", backgroundColor: user.uid == sent_by ? accentColour : "grey" }]}>
+          <Text style={{ fontFamily: systemFont, fontSize: 17, color: systemTheme=="light"?"black":"white" }}>{text}</Text>
+          <Text style={{ fontSize: 10, alignSelf: user.uid == sent_by ? "flex-end" : "flex-start", paddingTop: 5, color: systemTheme=="light"?"black":"white" }}>{new Date(time).toLocaleTimeString([], { hour: "numeric", minute: "numeric" })}</Text>
         </View>
       )
     }
-    
+
   }
 
   const renderMessageBubble = ({ item }) => (
@@ -122,21 +122,20 @@ const Message = ({ user, accentColour, systemTheme, systemFont, route }) => {
 
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
-      style={styles.container}
+      style={systemTheme=="light" ? styles.mainContainer : styles.mainContainer__dark}
       keyboardVerticalOffset={110}
     >
       <SafeAreaView style={{ flex: 1 }}>
-        <View style={{ flex: 8 }}>
-          <FlatList data={messages} renderItem={renderMessageBubble} inverted contentContainerStyle={{ flexDirection: 'column-reverse' }} />
+        <View style={styles.flatListContainer}>
+          <FlatList showsVerticalScrollIndicator={false} data={messages} renderItem={renderMessageBubble} inverted contentContainerStyle={{ flexDirection: 'column-reverse' }} />
         </View>
-        <SafeAreaView style={{ flex: 1, flexDirection: "row", flexGrow: 1, justifyContent: "center", marginBottomr: 10, position: "relative" }}>
-          {/* <TextInput multiline value={text} onChangeText={setText} style={{paddingHorizontal: 10,fontSize:18,textAlignVertical:"center", paddingVertical:30, borderColor: "black", borderWidth: StyleSheet.hairlineWidth * 10, borderRadius: StyleSheet.hairlineWidth * 15, flexBasis: "85%",flexGrow:0,flexShrink:1, height: "30%", alignSelf: "center", margin: 10 }} /> */}
-          <TextInput multiline value={text} onChangeText={setText} style={{ backgroundColor: "white", position: "absolute", paddingHorizontal: 10, fontSize: 18, textAlignVertical: "center", paddingVertical: 30, borderColor: "black", borderWidth: StyleSheet.hairlineWidth * 10, borderRadius: StyleSheet.hairlineWidth * 15, width: "75%", flexGrow: 0, flexShrink: 1, alignSelf: "flex-end", margin: 10, justifyContent: "flex-start", left: 10 }} />
+        <SafeAreaView style={styles.inputContainer}>
+          <TextInput multiline value={text} onChangeText={setText} style={systemTheme === "light" ? styles.messageInput : styles.messageInput__dark} />
           <TouchableOpacity
-            style={[styles.colourButton, { backgroundColor: accentColour, position: "absolute", right: 10, bottom: 3, borderColor: "black", borderWidth: StyleSheet.hairlineWidth * 10, flex: 1, justifyContent: "center" }]}
+            style={[styles.colourButton, { backgroundColor: accentColour }]}
             onPress={() => { sendMessage() }}
           >
-            <View style={{ flex: 1, justifyContent: "center", alignItems: "center", transform: [{ rotate: "-25deg" }] }}>
+            <View style={styles.sendButton}>
               <Ionicons name="send" size={28} color="white" />
             </View>
           </TouchableOpacity>
@@ -145,30 +144,6 @@ const Message = ({ user, accentColour, systemTheme, systemFont, route }) => {
     </KeyboardAvoidingView>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1
-  },
-  inner: {
-    padding: 5,
-    flex: 1,
-    justifyContent: "space-around"
-  },
-  header: {
-    fontSize: 36,
-    marginBottom: 48
-  },
-  textInput: {
-    borderColor: "#000000",
-    borderBottomWidth: 1,
-  },
-  colourButton: {
-    borderRadius: 40,
-    height: 58,
-    width: 58,
-  }
-});
 
 
 const mapDispatch = {

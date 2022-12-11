@@ -49,7 +49,6 @@ function MainTabNavigator({ systemFont, accentColour, systemTheme }) {
       screenOptions={({ route }) => ({
         tabBarIcon: ({ color }) => screenOptions(route, color),
         tabBarBackground: () => <View style={systemTheme == 'light' ? { backgroundColor: 'white', flex: 1 } : { backgroundColor: '#2B2A2E', flex: 1 }}></View>,
-        elevation: 0,
       })}
     >
       <Tab.Screen
@@ -81,10 +80,6 @@ function MainTabNavigator({ systemFont, accentColour, systemTheme }) {
             fontFamily: systemFont
           },
           tabBarActiveTintColor: `${accentColour}`,
-          bottomTabs: {
-            backgroundColor: 'green'
-          },
-
 
         }} />
       <Tab.Screen

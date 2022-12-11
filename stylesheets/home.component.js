@@ -49,7 +49,6 @@ export default StyleSheet.create({
       marginLeft: 5,
   },
   itemHeader: {
-      marginBottom: 5,
       flexDirection: "row",
       justifyContent: "space-between",
   },

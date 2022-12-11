@@ -27,7 +27,7 @@ const Login = ({ setUser, navigation, user }) => {
                     (userCredential) => {
                         setUser(userCredential.user);
                     }
-                );
+                ).catch((err) =>console.log(err));
             }
         } catch (err) {
             console.log(err);

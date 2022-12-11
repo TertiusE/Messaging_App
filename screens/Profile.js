@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Platform, SafeAreaView, Text, StyleSheet, Image, Button, View, TextInput, TouchableOpacity, Modal, KeyboardAvoidingView } from "react-native";
+import { Platform, SafeAreaView, Text, StyleSheet, Image, Button, View, TextInput, TouchableOpacity, Modal, KeyboardAvoidingView, TouchableWithoutFeedback } from "react-native";
 import { setUser, setAccentColour, setSystemFont, setLoading, setTheme, setDateOfBirth } from "../redux/actions";
 import { connect } from "react-redux";
 import styles from '../stylesheets/profile.component';
@@ -8,7 +8,7 @@ import RNDateTimePicker from '@react-native-community/datetimepicker';
 import { useIsFocused } from '@react-navigation/native'
 
 
-const Profile = ({ user, setUser, setAccentColour, setSystemFont, setLoading, setDateOfBirth }) => {
+const Profile = ({ user, setUser, setAccentColour, setSystemFont, setLoading, setDateOfBirth, systemFont }) => {
   const [fName, setfName] = useState(user.fName);
   const [lName, setlName] = useState(user.lName);
   const [birthDate, setBirthDate] = useState(new Date(user.dateOfBirth));
@@ -30,11 +30,11 @@ const Profile = ({ user, setUser, setAccentColour, setSystemFont, setLoading, se
     });
   }
 
-  useEffect(()=>{
+  useEffect(() => {
     setDateOfBirth(user.dateOfBirth)
     setfName(user.fName)
     setlName(user.lName)
-  },[isFocused])
+  }, [isFocused])
   /* Dispatch User Info changes */
   const onSaveChangesClicked = () => {
     if (/\.(jpg|jpeg|png|webp|avif|gif|svg)$/.test(profileImg)) {
@@ -57,7 +57,7 @@ const Profile = ({ user, setUser, setAccentColour, setSystemFont, setLoading, se
 
   return (
     <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"}
-    style={{ flex: 1 }}>
+      style={{ flex: 1 }}>
       <SafeAreaView style={systemTheme == 'light' ? styles.mainContainer : styles.mainContainer__dark}>
         <Modal
           animationType="fade"
@@ -67,7 +67,7 @@ const Profile = ({ user, setUser, setAccentColour, setSystemFont, setLoading, se
         >
           <View style={styles.centeredView}>
             <View style={styles.modalView}>
-              <Text style={styles.modalText}>Change Image</Text>
+              <Text style={[styles.modalText, { fontFamily: systemFont }]}>Change Image</Text>
               <TextInput
                 style={styles.inputText}
                 placeholder="Image URL"
@@ -76,7 +76,7 @@ const Profile = ({ user, setUser, setAccentColour, setSystemFont, setLoading, se
               />
               <TouchableOpacity style={[styles.button, styles.buttonClose]}
                 onPress={() => setModalVisible(!modalVisible)}>
-                <Text style={{ color: 'white' }}>Close</Text>
+                <Text style={{ color: 'white', fontFamily: systemFont }}>Close</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -86,15 +86,16 @@ const Profile = ({ user, setUser, setAccentColour, setSystemFont, setLoading, se
           source={profileImg
             ? { uri: `${profileImg}` } : { uri: "https://s3-eu-west-1.amazonaws.com/artsthread-content/images/users/68ebb7a3c21864ae50b17a28b4866a94.jpg" }}
         />
-        {fName !== "" && lName !== "" ? (<Text style={systemTheme == 'light' ? styles.header : styles.header__dark}>{fName} {lName}</Text>
+        {fName !== "" && lName !== "" ? (<Text style={[systemTheme == 'light' ? styles.header : styles.header__dark, { fontFamily: systemFont }]}>{fName} {lName}</Text>
         ) : (<Text style={systemTheme == 'light' ? styles.header : styles.header__dark}>FirstName LastName</Text>)}
-        <Button
-          onPress={() => setModalVisible(true)}
-          title="Change photo"
-          color={accentColour}
-        />
+
+        <TouchableWithoutFeedback onPress={() => setModalVisible(true)}>
+          <View style={{marginTop:5}}>
+            <Text style={{fontFamily:systemFont, color:accentColour, fontSize:18}}>Change Photo</Text>
+          </View>
+        </TouchableWithoutFeedback>
         <View style={styles.inputContainer}>
-          <Text style={systemTheme == 'light' ? styles.inputLabel : styles.inputLabel_dark}>First Name</Text>
+          <Text style={[systemTheme == 'light' ? styles.inputLabel : styles.inputLabel_dark, { fontFamily: systemFont }]}>First Name</Text>
           <TextInput
             style={systemTheme == 'light' ? styles.inputText : styles.inputText__dark}
             placeholder="First Name"
@@ -103,7 +104,7 @@ const Profile = ({ user, setUser, setAccentColour, setSystemFont, setLoading, se
             onChangeText={setfName}
             keyboardAppearance={systemTheme}
           />
-          <Text style={systemTheme == 'light' ? styles.inputLabel : styles.inputLabel_dark}>Last Name</Text>
+          <Text style={[systemTheme == 'light' ? styles.inputLabel : styles.inputLabel_dark, { fontFamily: systemFont }]}>Last Name</Text>
           <TextInput
             style={systemTheme == 'light' ? styles.inputText : styles.inputText__dark}
             placeholder="Last Name"
@@ -112,9 +113,9 @@ const Profile = ({ user, setUser, setAccentColour, setSystemFont, setLoading, se
             onChangeText={setlName}
             keyboardAppearance={systemTheme}
           />
-          <View style={{flexDirection:"row"}}>
-            <Text style={systemTheme == 'light' ? styles.inputLabel : styles.inputLabel_dark}>Date of Birth</Text>
-            <View style={{flex:1}}>
+          <View style={{ flexDirection: "row" }}>
+            <Text style={[systemTheme == 'light' ? styles.inputLabel : styles.inputLabel_dark, { fontFamily: systemFont }]}>Date of Birth</Text>
+            <View style={{ flex: 1 }}>
               <RNDateTimePicker
                 value={birthDate}
                 mode="date"
@@ -122,12 +123,12 @@ const Profile = ({ user, setUser, setAccentColour, setSystemFont, setLoading, se
                 onChange={onChange}
                 themeVariant={systemTheme}
                 maximumDate={new Date()}
-                style={{position:"absolute",left:"40%",top:15 }}
+                style={{ position: "absolute", left: "40%", top: 15 }}
               />
             </View>
           </View>
-          <TouchableOpacity style={[systemTheme == 'light' ? styles.saveButton : styles.saveButton__dark, { backgroundColor: accentColour, marginTop:50 }]} onPress={() => onSaveChangesClicked()}>
-            <Text style={styles.saveText}>Save Changes</Text>
+          <TouchableOpacity style={[systemTheme == 'light' ? styles.saveButton : styles.saveButton__dark, { backgroundColor: accentColour, marginTop: 50 }]} onPress={() => onSaveChangesClicked()}>
+            <Text style={[styles.saveText, { fontFamily: systemFont }]}>Save Changes</Text>
           </TouchableOpacity>
         </View>
       </SafeAreaView>
@@ -139,12 +140,12 @@ const Profile = ({ user, setUser, setAccentColour, setSystemFont, setLoading, se
 
 const mapDispatch = { setUser, setAccentColour, setSystemFont, setLoading, setTheme, setDateOfBirth };
 const mapState = (store) => ({
-    user: store.dataReducer.user,
-    accentColour: store.dataReducer.accentColour,
-    systemFont: store.dataReducer.systemFont,
-    systemTheme: store.dataReducer.systemTheme,
-    isLoading: store.dataReducer.isLoading,
-    dateOfBirth: store.dataReducer.dateOfBirth
+  user: store.dataReducer.user,
+  accentColour: store.dataReducer.accentColour,
+  systemFont: store.dataReducer.systemFont,
+  systemTheme: store.dataReducer.systemTheme,
+  isLoading: store.dataReducer.isLoading,
+  dateOfBirth: store.dataReducer.dateOfBirth
 });
 
 
