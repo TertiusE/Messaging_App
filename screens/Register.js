@@ -8,12 +8,14 @@ import { doc, setDoc, getFirestore } from "firebase/firestore"
 import styles from "../stylesheets/login.component";
 import { Ionicons } from '@expo/vector-icons';
 import RNDateTimePicker from '@react-native-community/datetimepicker';
+import { useColorScheme } from 'react-native';
 
 const auth = getAuth(fireApp)
 const db = getFirestore(fireApp)
 
 
 const Register = ({ systemTheme, setUser, user, navigation }) => {
+    let colorScheme = useColorScheme()
     const [fName, setFName] = useState("")
     const [lName, setLName] = useState("")
     const [email, setEmail] = useState("")
@@ -47,7 +49,7 @@ const Register = ({ systemTheme, setUser, user, navigation }) => {
                         conversations: [],
                         accentColour: '#5C4DF8',
                         systemFont: null,
-                        systemTheme: "light",
+                        systemTheme: colorScheme,
                         dateOfBirth: birthDate.getTime()
                     })
                     setDoc(doc(db, 'conversations', userCredential.user.uid), {
@@ -63,10 +65,10 @@ const Register = ({ systemTheme, setUser, user, navigation }) => {
     return (
         <KeyboardAvoidingView
             behavior={Platform.OS === "ios" ? "padding" : "height"}
-            style={{ flex: 1 }}>
+            style={{ flex: 1, backgroundColor:colorScheme=="light"?"white":"#1A1A1D" }}>
             <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
                 <SafeAreaView style={styles.mainContainer}>
-                    <Text style={styles.header}>Register to Begin</Text>
+                    <Text style={[styles.header, {color:colorScheme=="light"?"black":"white"}]}>Register to Begin</Text>
                     <Text style={styles.subheader}>Create your account details</Text>
                     <View style={styles.inputContainer}>
                         <Text style={styles.inputLabel}>First Name</Text>
@@ -95,7 +97,7 @@ const Register = ({ systemTheme, setUser, user, navigation }) => {
                                     mode="date"
                                     is24Hour={true}
                                     onChange={onChange}
-                                    themeVariant={systemTheme}
+                                    themeVariant={colorScheme}
                                     maximumDate={new Date()}
                                     style={{ position: "absolute", left: "41%", top: 0 }}
                                 />
@@ -129,7 +131,7 @@ const Register = ({ systemTheme, setUser, user, navigation }) => {
                             </TouchableWithoutFeedback>
                         </View>
                     </View>
-                    <TouchableOpacity style={[styles.loginButton, { backgroundColor: '#919CFF' }]} onPress={onRegister}>
+                    <TouchableOpacity style={[styles.loginButton, { backgroundColor: '#919CFF', shadowOpacity:colorScheme=="light"?1:0 }]} onPress={onRegister}>
                         <Text style={styles.loginText}>Register</Text>
                     </TouchableOpacity>
                     <Button
