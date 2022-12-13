@@ -242,14 +242,9 @@ const Home = ({ user, setDateOfBirth, setUser, setAccentColour, setTheme, setSys
         )
     }
 
-    const signOut = async () => {
-        try {
-            await auth.signOut()
-        } catch (err) {
-            console.log(err)
-        }
-    }
-
+    const search = (item) => {
+        return item.fName.includes(text) || item.lName.includes(text) || item.email.includes(text)
+    } 
     return (
         <View style={systemTheme == 'light' ? styles.mainContainer : styles.mainContainer__dark}>
             <TextInput
@@ -261,7 +256,7 @@ const Home = ({ user, setDateOfBirth, setUser, setAccentColour, setTheme, setSys
                 keyboardAppearance={systemTheme}
             />
             <FlatList
-                data={currentUser.conversations}
+                data={text.length < 1 ? currentUser.conversations : currentUser.conversations.filter(search)}
                 renderItem={renderMessageItem}
                 keyExtractor={(item) => item.uid}
             />

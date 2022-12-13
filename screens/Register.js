@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Platform, KeyboardAvoidingView, SafeAreaView, Text, View, TextInput, Button, TouchableOpacity, TouchableWithoutFeedback, Keyboard } from "react-native";
+import { Platform, KeyboardAvoidingView, SafeAreaView, Text, View, TextInput, StyleSheet, TouchableOpacity, TouchableWithoutFeedback, Keyboard } from "react-native";
 import fireApp from "../config/firebase";
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 import { connect } from "react-redux";
@@ -20,10 +20,11 @@ const Register = ({ systemTheme, setUser, user, navigation }) => {
     const [lName, setLName] = useState("")
     const [email, setEmail] = useState("")
     const [birthDate, setBirthDate] = useState(new Date());
-    const [open, setOpen] = useState(false)
+    const [show, setShow] = useState(Platform.OS === 'ios')
     const [password, setPassword] = useState("")
     const [visibility, setVisibility] = useState(true)
     const isAndroid = Platform.OS == "android"
+
 
 
     const toggleVisibility = () => {
@@ -32,7 +33,7 @@ const Register = ({ systemTheme, setUser, user, navigation }) => {
 
     const onChange = (event, selectedDate) => {
         const currentDate = selectedDate;
-        setOpen(false);
+        setShow(Platform.OS == "ios");
         setBirthDate(currentDate);
     };
 
@@ -91,10 +92,24 @@ const Register = ({ systemTheme, setUser, user, navigation }) => {
                             autoComplete="name-family"
                             textContentType="familyName"
                         />
-                        {!isAndroid &&
-                            <View style={{ flexDirection: "row", marginBottom: 30 }}>
-                                <Text style={styles.inputLabel}>Date of Birth</Text>
-                                <View style={{ flex: 1 }}>
+                        <View style={{ flexDirection: "row", marginBottom: 30 }}>
+                            <Text style={styles.inputLabel}>Date of Birth</Text>
+                            <View style={{ flex: 1 }}>
+                                {isAndroid && (
+                                    <View style={{flex:1,flexDirection:"row", justifyContent:"flex-end", height:50}}>
+                                        <View style={{borderColor: colorScheme=="light" ? "black":"white", borderWidth: 3, marginRight:10, height:38}}>
+                                            <Text style={{color:colorScheme=="light" ? "black":"white", padding:5}}>{birthDate.toDateString()}</Text>
+                                        </View>
+                                        <View style={{height:60}}>
+                                            <TouchableWithoutFeedback onPress={() => { setShow(!show) }}>
+                                                <Ionicons suppressHighlighting={true} name={"calendar"} size={35} color="#919CFF" />
+                                            </TouchableWithoutFeedback>
+                                        </View>
+                                        
+                                    </View>
+
+                                )}
+                                {show &&
                                     <RNDateTimePicker
                                         value={birthDate}
                                         mode="date"
@@ -104,9 +119,9 @@ const Register = ({ systemTheme, setUser, user, navigation }) => {
                                         maximumDate={new Date()}
                                         style={{ position: "absolute", left: "41%", top: 0 }}
                                     />
-                                </View>
+                                }
                             </View>
-                        }
+                        </View>
                         <Text style={styles.inputLabel}>Email Address</Text>
                         <TextInput
                             style={styles.inputText}

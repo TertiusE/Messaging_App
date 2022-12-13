@@ -1,6 +1,5 @@
 import { React, useState, useEffect } from "react";
 import { Platform, Text, View, StyleSheet, Switch, TouchableOpacity, SafeAreaView } from "react-native";
-import Ionicons from "@expo/vector-icons/Ionicons";
 import { setUser, setAccentColour, setSystemFont, setLoading, setTheme } from "../redux/actions";
 import { connect } from "react-redux";
 import { useFonts } from 'expo-font';
@@ -8,6 +7,7 @@ import DropDownPicker from "react-native-dropdown-picker";
 import { updateDoc, doc, getFirestore, } from "firebase/firestore"
 import fireApp from "../config/firebase";
 import { useIsFocused } from '@react-navigation/native'
+import { Ionicons } from '@expo/vector-icons';
 import styles from '../stylesheets/settings.component';
 
 

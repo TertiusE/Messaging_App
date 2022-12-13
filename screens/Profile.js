@@ -8,13 +8,15 @@ import RNDateTimePicker from '@react-native-community/datetimepicker';
 import { useIsFocused } from '@react-navigation/native'
 import { doc, updateDoc, getFirestore } from "firebase/firestore";
 import fireApp from "../config/firebase";
+import { Ionicons } from '@expo/vector-icons';
+
 
 
 const Profile = ({ user, setUser, setAccentColour, setSystemFont, setLoading, setDateOfBirth, systemFont }) => {
     const [fName, setfName] = useState(user.fName);
     const [lName, setlName] = useState(user.lName);
     const [birthDate, setBirthDate] = useState(new Date(user.dateOfBirth));
-    const [open, setOpen] = useState(false)
+    const [show, setShow] = useState(Platform.OS == "ios")
     const [profileImg, setProfileImg] = useState("");
     const [modalVisible, setModalVisible] = useState(false);
     const isFocused = useIsFocused()
@@ -35,12 +37,14 @@ const Profile = ({ user, setUser, setAccentColour, setSystemFont, setLoading, se
         });
     }
 
+
     useEffect(() => {
-        setDateOfBirth(user.dateOfBirth)
         setfName(user.fName)
         setlName(user.lName)
+        setBirthDate(new Date(user.dateOfBirth))
     }, [isFocused])
     /* Dispatch User Info changes */
+
     const onSaveChangesClicked = () => {
         if (/\.(jpg|jpeg|png|webp|avif|gif|svg)$/.test(profileImg)) {
             userChanges.profileImage = profileImg;
@@ -56,7 +60,7 @@ const Profile = ({ user, setUser, setAccentColour, setSystemFont, setLoading, se
 
     const onChange = (event, selectedDate) => {
         const currentDate = selectedDate;
-        setOpen(false);
+        setShow(Platform.OS == 'ios');
         setBirthDate(currentDate);
     };
 
@@ -91,7 +95,7 @@ const Profile = ({ user, setUser, setAccentColour, setSystemFont, setLoading, se
                     source={profileImg
                         ? { uri: `${profileImg}` } : { uri: "https://s3-eu-west-1.amazonaws.com/artsthread-content/images/users/68ebb7a3c21864ae50b17a28b4866a94.jpg" }}
                 />
-                {fName !== "" && lName !== "" ? (<Text style={[systemTheme == 'light' ? styles.header : styles.header__dark, { fontFamily: systemFont }]}>{fName} {lName}</Text>
+                {fName !== "" || lName !== "" ? (<Text style={[systemTheme == 'light' ? styles.header : styles.header__dark, { fontFamily: systemFont }]}>{fName} {lName}</Text>
                 ) : (<Text style={systemTheme == 'light' ? styles.header : styles.header__dark}>FirstName LastName</Text>)}
 
                 <TouchableWithoutFeedback onPress={() => setModalVisible(true)}>
@@ -118,22 +122,36 @@ const Profile = ({ user, setUser, setAccentColour, setSystemFont, setLoading, se
                         onChangeText={setlName}
                         keyboardAppearance={systemTheme}
                     />
-                    {!isAndroid &&
                     <View style={{ flexDirection: "row" }}>
                         <Text style={[systemTheme == 'light' ? styles.inputLabel : styles.inputLabel_dark, { fontFamily: systemFont }]}>Date of Birth</Text>
                         <View style={{ flex: 1 }}>
-                            <RNDateTimePicker
-                                value={birthDate}
-                                mode="date"
-                                is24Hour={false}
-                                onChange={onChange}
-                                themeVariant={systemTheme}
-                                maximumDate={new Date()}
-                                style={{ position: "absolute", left: "40%", top: 15 }}
-                            />
+                            {isAndroid && (
+                                <View style={{ flex: 1, flexDirection: "row", justifyContent: "flex-end", height: 50, marginTop:29 }}>
+                                    <View style={{ borderColor: systemTheme == "light" ? "black" : "white", borderWidth: 2, marginRight: 10, height: 38, alignItems:"center" }}>
+                                        <Text style={{ color: systemTheme == "light" ? "black" : "white", padding: 5}}>{birthDate.toDateString()}</Text>
+                                    </View>
+                                    <View style={{ height: 60 }}>
+                                        <TouchableWithoutFeedback onPress={() => { setShow(!show) }}>
+                                            <Ionicons suppressHighlighting={true} name={"calendar"} size={35} color={accentColour} />
+                                        </TouchableWithoutFeedback>
+                                    </View>
+
+                                </View>
+
+                            )}
+                            {show &&
+                                <RNDateTimePicker
+                                    value={birthDate}
+                                    mode="date"
+                                    is24Hour={false}
+                                    onChange={onChange}
+                                    themeVariant={systemTheme}
+                                    maximumDate={new Date()}
+                                    style={{ position: "absolute", left: "41%", top: 25 }}
+                                />
+                            }
                         </View>
                     </View>
-                    }
                     <TouchableOpacity style={[systemTheme == 'light' ? styles.saveButton : styles.saveButton__dark, { backgroundColor: accentColour, marginTop: 50 }]} onPress={() => updateSettings()}>
                         <Text style={[styles.saveText, { fontFamily: systemFont }]}>Save Changes</Text>
                     </TouchableOpacity>

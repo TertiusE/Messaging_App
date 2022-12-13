@@ -80,7 +80,7 @@ export default StyleSheet.create({
         flexDirection: "row", 
         flexGrow: 1, 
         justifyContent: "center", 
-        marginBottomr: 10, 
+        marginBottom: 10, 
         position: "relative" 
     },
     flatListContainer: { 

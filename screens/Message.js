@@ -34,7 +34,6 @@ const Message = ({ user, accentColour, systemTheme, systemFont, route }) => {
 
   const formatAndroid = (date) => {
     let date_array = date.split(":").slice(0, 2)
-    console.log(date_array)
     if (parseInt(date_array[0]) > 12) {
       return `${parseInt(date_array[0]) - 12}:${date_array[1]} PM`
     }
@@ -161,12 +160,12 @@ const Message = ({ user, accentColour, systemTheme, systemFont, route }) => {
       style={systemTheme == "light" ? styles.mainContainer : styles.mainContainer__dark}
       keyboardVerticalOffset={110}
     >
-      <SafeAreaView style={{ flex: 1 }}>
-        <View style={styles.flatListContainer}>
+      <SafeAreaView style={{ flex: 1}}>
+        <View style={[styles.flatListContainer,{marginBottom:Platform.OS == "android"?60:17}]}>
           <FlatList showsVerticalScrollIndicator={false} data={messages} renderItem={renderMessageBubble} inverted contentContainerStyle={{ flexDirection: 'column-reverse' }} />
         </View>
         <SafeAreaView style={styles.inputContainer}>
-          <TextInput multiline value={text} onChangeText={setText} style={systemTheme === "light" ? styles.messageInput : styles.messageInput__dark} />
+          <TextInput multiline value={text} onChangeText={setText} style={[systemTheme === "light" ? styles.messageInput : styles.messageInput__dark,{paddingVertical:Platform.OS=="android"?15:30}]} />
           <TouchableOpacity
             style={[styles.colourButton, { backgroundColor: accentColour }]}
             onPress={() => { sendMessage() }}
