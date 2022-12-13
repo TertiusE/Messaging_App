@@ -4,12 +4,13 @@ import fireApp from "../config/firebase";
 import { setUser, setAccentColour, setSystemFont, setLoading, setTheme, setDateOfBirth } from "../redux/actions";
 import { connect } from "react-redux";
 import { Platform, View, Text, SafeAreaView, FlatList, StyleSheet, Image, TextInput, TouchableHighlight, TouchableOpacity, Button, Modal } from "react-native";
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useIsFocused } from '@react-navigation/native';
 import { onSnapshot, collection, query, where, doc, orderBy, limit, getFirestore, getDocs, updateDoc, arrayUnion } from "firebase/firestore";
 import Profile from "../assets/profile-icon.png";
 import { Ionicons } from '@expo/vector-icons';
 import styles from '../stylesheets/home.component';
 import store from '../redux/store/index'
+
 
 const auth = getAuth(fireApp)
 const db = getFirestore(fireApp)
@@ -21,6 +22,8 @@ function MessageItem({ fName, lName, time, message, otherUser }) {
     const user = state.dataReducer.user
     const systemFont = state.dataReducer.systemFont
     let [m, setM] = useState({ sent_at: "", text: "" })
+    const isFocused = useIsFocused()
+
     useEffect(() => {
         let allMessages = [];
         const userRef = onSnapshot(doc(db, "conversations", otherUser.uid), (doc) => {
@@ -33,12 +36,13 @@ function MessageItem({ fName, lName, time, message, otherUser }) {
                 }
             });
             allMessages = allMessages.sort((m1, m2) => (m1.sent_at < m2.sent_at) ? 1 : (m1.sent_at > m2.sent_at) ? -1 : 0)
+            setM({ sent_at: "", text: "" })
             if (allMessages.length !== 0) {
                 setM({ sent_at: new Date(allMessages[0].sent_at).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }), text: allMessages[0].text })
             }
 
         })
-    }, [])
+    }, [isFocused])
 
     const navigation = useNavigation();
     return (

@@ -93,7 +93,6 @@ const Message = ({ user, accentColour, systemTheme, systemFont, route }) => {
   };
 
   let deleteMessage = async (m) => {
-    console.log(m)
     if (m.sent_by == user.uid) {
       const userRef = doc(db, "conversations", user.uid);
       const userUnion = await updateDoc(userRef, {

@@ -11,145 +11,145 @@ import fireApp from "../config/firebase";
 
 
 const Profile = ({ user, setUser, setAccentColour, setSystemFont, setLoading, setDateOfBirth, systemFont }) => {
-  const [fName, setfName] = useState(user.fName);
-  const [lName, setlName] = useState(user.lName);
-  const [birthDate, setBirthDate] = useState(new Date(user.dateOfBirth));
-  const [open, setOpen] = useState(false)
-  const [profileImg, setProfileImg] = useState("");
-  const [modalVisible, setModalVisible] = useState(false);
-  const isFocused = useIsFocused()
-  const db = getFirestore(fireApp);
+    const [fName, setfName] = useState(user.fName);
+    const [lName, setlName] = useState(user.lName);
+    const [birthDate, setBirthDate] = useState(new Date(user.dateOfBirth));
+    const [open, setOpen] = useState(false)
+    const [profileImg, setProfileImg] = useState("");
+    const [modalVisible, setModalVisible] = useState(false);
+    const isFocused = useIsFocused()
+    const db = getFirestore(fireApp);
 
 
-  const state = store.getState();
-  const systemTheme = state.dataReducer.systemTheme
-  const accentColour = state.dataReducer.accentColour
+    const state = store.getState();
+    const systemTheme = state.dataReducer.systemTheme
+    const accentColour = state.dataReducer.accentColour
 
-  let updateSettings = async () => {
-    const userRef = doc(db, "users", user.uid);
-    const userUnion = await updateDoc(userRef, {
-      fName: fName,
-      lName: lName,
-      dateOfBirth: birthDate.getTime()
-    });
-  }
-
-  useEffect(() => {
-    setDateOfBirth(user.dateOfBirth)
-    setfName(user.fName)
-    setlName(user.lName)
-  }, [isFocused])
-  /* Dispatch User Info changes */
-  const onSaveChangesClicked = () => {
-    if (/\.(jpg|jpeg|png|webp|avif|gif|svg)$/.test(profileImg)) {
-      userChanges.profileImage = profileImg;
-      setProfileImg(profileImg)
-    } else {
-      setProfileImg(
-        "https://s3-eu-west-1.amazonaws.com/artsthread-content/images/users/68ebb7a3c21864ae50b17a28b4866a94.jpg"
-      );
+    let updateSettings = async () => {
+        const userRef = doc(db, "users", user.uid);
+        const userUnion = await updateDoc(userRef, {
+            fName: fName,
+            lName: lName,
+            dateOfBirth: birthDate.getTime()
+        });
     }
 
-    console.log(userChanges);
-  };
+    useEffect(() => {
+        setDateOfBirth(user.dateOfBirth)
+        setfName(user.fName)
+        setlName(user.lName)
+    }, [isFocused])
+    /* Dispatch User Info changes */
+    const onSaveChangesClicked = () => {
+        if (/\.(jpg|jpeg|png|webp|avif|gif|svg)$/.test(profileImg)) {
+            userChanges.profileImage = profileImg;
+            setProfileImg(profileImg)
+        } else {
+            setProfileImg(
+                "https://s3-eu-west-1.amazonaws.com/artsthread-content/images/users/68ebb7a3c21864ae50b17a28b4866a94.jpg"
+            );
+        }
 
-  const onChange = (event, selectedDate) => {
-    const currentDate = selectedDate;
-    setOpen(false);
-    setBirthDate(currentDate);
-  };
+        console.log(userChanges);
+    };
 
-  return (
-    <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"}
-      style={{ flex: 1 }}>
-      <SafeAreaView style={systemTheme == 'light' ? styles.mainContainer : styles.mainContainer__dark}>
-        <Modal
-          animationType="fade"
-          transparent={true}
-          visible={modalVisible}
-          onRequestClose={setModalVisible}
-        >
-          <View style={styles.centeredView}>
-            <View style={styles.modalView}>
-              <Text style={[styles.modalText, { fontFamily: systemFont }]}>Change Image</Text>
-              <TextInput
-                style={styles.inputText}
-                placeholder="Image URL"
-                value={profileImg}
-                onChangeText={setProfileImg}
-              />
-              <TouchableOpacity style={[styles.button, styles.buttonClose]}
-                onPress={() => setModalVisible(!modalVisible)}>
-                <Text style={{ color: 'white', fontFamily: systemFont }}>Close</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </Modal>
-        <Image
-          style={styles.image}
-          source={profileImg
-            ? { uri: `${profileImg}` } : { uri: "https://s3-eu-west-1.amazonaws.com/artsthread-content/images/users/68ebb7a3c21864ae50b17a28b4866a94.jpg" }}
-        />
-        {fName !== "" && lName !== "" ? (<Text style={[systemTheme == 'light' ? styles.header : styles.header__dark, { fontFamily: systemFont }]}>{fName} {lName}</Text>
-        ) : (<Text style={systemTheme == 'light' ? styles.header : styles.header__dark}>FirstName LastName</Text>)}
+    const onChange = (event, selectedDate) => {
+        const currentDate = selectedDate;
+        setOpen(false);
+        setBirthDate(currentDate);
+    };
 
-        <TouchableWithoutFeedback onPress={() => setModalVisible(true)}>
-          <View style={{ marginTop: 5 }}>
-            <Text style={{ fontFamily: systemFont, color: accentColour, fontSize: 18 }}>Change Photo</Text>
-          </View>
-        </TouchableWithoutFeedback>
-        <View style={styles.inputContainer}>
-          <Text style={[systemTheme == 'light' ? styles.inputLabel : styles.inputLabel_dark, { fontFamily: systemFont }]}>First Name</Text>
-          <TextInput
-            style={systemTheme == 'light' ? styles.inputText : styles.inputText__dark}
-            placeholder="First Name"
-            placeholderTextColor={systemTheme == 'light' ? 'white' : 'white'}
-            value={fName}
-            onChangeText={setfName}
-            keyboardAppearance={systemTheme}
-          />
-          <Text style={[systemTheme == 'light' ? styles.inputLabel : styles.inputLabel_dark, { fontFamily: systemFont }]}>Last Name</Text>
-          <TextInput
-            style={systemTheme == 'light' ? styles.inputText : styles.inputText__dark}
-            placeholder="Last Name"
-            placeholderTextColor={systemTheme == 'light' ? 'white' : 'white'}
-            value={lName}
-            onChangeText={setlName}
-            keyboardAppearance={systemTheme}
-          />
-          <View style={{ flexDirection: "row" }}>
-            <Text style={[systemTheme == 'light' ? styles.inputLabel : styles.inputLabel_dark, { fontFamily: systemFont }]}>Date of Birth</Text>
-            <View style={{ flex: 1 }}>
-              <RNDateTimePicker
-                value={birthDate}
-                mode="date"
-                is24Hour={false}
-                onChange={onChange}
-                themeVariant={systemTheme}
-                maximumDate={new Date()}
-                style={{ position: "absolute", left: "40%", top: 15 }}
-              />
-            </View>
-          </View>
-          <TouchableOpacity style={[systemTheme == 'light' ? styles.saveButton : styles.saveButton__dark, { backgroundColor: accentColour, marginTop: 50 }]} onPress={() => updateSettings()}>
-            <Text style={[styles.saveText, { fontFamily: systemFont }]}>Save Changes</Text>
-          </TouchableOpacity>
-        </View>
-      </SafeAreaView>
-    </KeyboardAvoidingView>
-  );
+    return (
+        <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"}
+            style={{ flex: 1 }}>
+            <SafeAreaView style={systemTheme == 'light' ? styles.mainContainer : styles.mainContainer__dark}>
+                <Modal
+                    animationType="fade"
+                    transparent={true}
+                    visible={modalVisible}
+                    onRequestClose={setModalVisible}
+                >
+                    <View style={styles.centeredView}>
+                        <View style={styles.modalView}>
+                            <Text style={[styles.modalText, { fontFamily: systemFont }]}>Change Image</Text>
+                            <TextInput
+                                style={styles.inputText}
+                                placeholder="Image URL"
+                                value={profileImg}
+                                onChangeText={setProfileImg}
+                            />
+                            <TouchableOpacity style={[styles.button, styles.buttonClose]}
+                                onPress={() => setModalVisible(!modalVisible)}>
+                                <Text style={{ color: 'white', fontFamily: systemFont }}>Close</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                </Modal>
+                <Image
+                    style={styles.image}
+                    source={profileImg
+                        ? { uri: `${profileImg}` } : { uri: "https://s3-eu-west-1.amazonaws.com/artsthread-content/images/users/68ebb7a3c21864ae50b17a28b4866a94.jpg" }}
+                />
+                {fName !== "" && lName !== "" ? (<Text style={[systemTheme == 'light' ? styles.header : styles.header__dark, { fontFamily: systemFont }]}>{fName} {lName}</Text>
+                ) : (<Text style={systemTheme == 'light' ? styles.header : styles.header__dark}>FirstName LastName</Text>)}
+
+                <TouchableWithoutFeedback onPress={() => setModalVisible(true)}>
+                    <View style={{ marginTop: 5 }}>
+                        <Text style={{ fontFamily: systemFont, color: accentColour, fontSize: 18 }}>Change Photo</Text>
+                    </View>
+                </TouchableWithoutFeedback>
+                <View style={styles.inputContainer}>
+                    <Text style={[systemTheme == 'light' ? styles.inputLabel : styles.inputLabel_dark, { fontFamily: systemFont }]}>First Name</Text>
+                    <TextInput
+                        style={systemTheme == 'light' ? styles.inputText : styles.inputText__dark}
+                        placeholder="First Name"
+                        placeholderTextColor={systemTheme == 'light' ? 'white' : 'white'}
+                        value={fName}
+                        onChangeText={setfName}
+                        keyboardAppearance={systemTheme}
+                    />
+                    <Text style={[systemTheme == 'light' ? styles.inputLabel : styles.inputLabel_dark, { fontFamily: systemFont }]}>Last Name</Text>
+                    <TextInput
+                        style={systemTheme == 'light' ? styles.inputText : styles.inputText__dark}
+                        placeholder="Last Name"
+                        placeholderTextColor={systemTheme == 'light' ? 'white' : 'white'}
+                        value={lName}
+                        onChangeText={setlName}
+                        keyboardAppearance={systemTheme}
+                    />
+                    <View style={{ flexDirection: "row" }}>
+                        <Text style={[systemTheme == 'light' ? styles.inputLabel : styles.inputLabel_dark, { fontFamily: systemFont }]}>Date of Birth</Text>
+                        <View style={{ flex: 1 }}>
+                            <RNDateTimePicker
+                                value={birthDate}
+                                mode="date"
+                                is24Hour={false}
+                                onChange={onChange}
+                                themeVariant={systemTheme}
+                                maximumDate={new Date()}
+                                style={{ position: "absolute", left: "40%", top: 15 }}
+                            />
+                        </View>
+                    </View>
+                    <TouchableOpacity style={[systemTheme == 'light' ? styles.saveButton : styles.saveButton__dark, { backgroundColor: accentColour, marginTop: 50 }]} onPress={() => updateSettings()}>
+                        <Text style={[styles.saveText, { fontFamily: systemFont }]}>Save Changes</Text>
+                    </TouchableOpacity>
+                </View>
+            </SafeAreaView>
+        </KeyboardAvoidingView>
+    );
 };
 
 
 
 const mapDispatch = { setUser, setAccentColour, setSystemFont, setLoading, setTheme, setDateOfBirth };
 const mapState = (store) => ({
-  user: store.dataReducer.user,
-  accentColour: store.dataReducer.accentColour,
-  systemFont: store.dataReducer.systemFont,
-  systemTheme: store.dataReducer.systemTheme,
-  isLoading: store.dataReducer.isLoading,
-  dateOfBirth: store.dataReducer.dateOfBirth
+    user: store.dataReducer.user,
+    accentColour: store.dataReducer.accentColour,
+    systemFont: store.dataReducer.systemFont,
+    systemTheme: store.dataReducer.systemTheme,
+    isLoading: store.dataReducer.isLoading,
+    dateOfBirth: store.dataReducer.dateOfBirth
 });
 
 
