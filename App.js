@@ -11,6 +11,7 @@ import * as SplashScreen from 'expo-splash-screen';
 
 export default function App() {
   LogBox.ignoreLogs(['AsyncStorage has been extracted from react-native core and will be removed in a future release.']);
+  LogBox.ignoreLogs(['Animated: `useNativeDriver`']);
   const [isLoading, setLoading] = useState(true)
   SplashScreen.preventAutoHideAsync();
   const [fontsLoaded] = useFonts({

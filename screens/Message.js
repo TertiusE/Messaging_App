@@ -1,11 +1,10 @@
-import { React, useState, useEffect } from "react";
+import { React, useState, useEffect, useCallback } from "react";
 import {
   onSnapshot,
   doc,
   getFirestore,
   updateDoc,
   arrayUnion,
-  arrayRemove
 } from "firebase/firestore";
 import {
   setUser,
@@ -17,7 +16,7 @@ import {
 import { connect } from "react-redux";
 import uuid from "react-native-uuid";
 import fireApp from "../config/firebase";
-import { Keyboard, Alert, Platform, KeyboardAvoidingView, View, FlatList, Text, StyleSheet, SafeAreaView, TextInput, TouchableWithoutFeedback, TouchableOpacity } from "react-native";
+import { Keyboard, Button, Platform, KeyboardAvoidingView, View, FlatList, Text, StyleSheet, SafeAreaView, TextInput, TouchableWithoutFeedback, TouchableOpacity } from "react-native";
 import { Ionicons } from '@expo/vector-icons';
 import styles from '../stylesheets/message.component';
 
@@ -30,15 +29,6 @@ const Message = ({ user, accentColour, systemTheme, systemFont, route }) => {
   const [messageArray, setMessageArray] = useState([]);
   const [arrayDates, setArray] = useState([])
   const [messageID, setIDArray] = useState([])
-  const isAndroid = Platform.OS == "android"
-
-  const formatAndroid = (date) => {
-    let date_array = date.split(":").slice(0, 2)
-    if (parseInt(date_array[0]) > 12) {
-      return `${parseInt(date_array[0]) - 12}:${date_array[1]} PM`
-    }
-    return `${date_array[0]}:${date_array[1]} AM`
-  }
 
   useEffect(() => {
     const fetchData = async () => {
@@ -101,77 +91,51 @@ const Message = ({ user, accentColour, systemTheme, systemFont, route }) => {
     setText("");
   };
 
-  let deleteMessage = async (m) => {
-    if (m.sent_by == user.uid) {
-      const userRef = doc(db, "conversations", user.uid);
-      const userUnion = await updateDoc(userRef, {
-        messages: arrayRemove(m),
-      });
 
-      const otherRef = doc(db, "conversations", otherUser.uid);
-      const unionRes = await updateDoc(otherRef, {
-        messages: arrayRemove(m),
-      });
-    }
-  };
-
-
-  const MessageBubble = ({ text, sent_by, time, id, message }) => {
-    let alertOptions = [
-      { text: "Delete", onPress: () => { deleteMessage(message) } },
-      { text: "Cancel", onPress: () => { } }
-    ]
-
-    let locale_date = new Date(time).toLocaleTimeString([], { hour: "numeric", minute: "numeric"})
-
+  const MessageBubble = ({ text, sent_by, time, id }) => {
     if (messageID.includes(id)) {
       return (
         <View>
-          <Text style={[styles.messageDate, { color: systemTheme == "light" ? "black" : "white" }]}>{arrayDates[messageID.indexOf(id)]}</Text>
-          <TouchableWithoutFeedback onLongPress={() => { user.uid == sent_by ? Alert.alert("Options", "", alertOptions) : null }}>
-            <View style={[styles.messageBubble, { alignSelf: user.uid == sent_by ? "flex-end" : "flex-start", backgroundColor: user.uid == sent_by ? accentColour : "grey" }]}>
-              <Text style={{ fontFamily: systemFont, fontSize: 17, color: systemTheme == "light" ? "black" : "white" }}>{text}</Text>
-              <Text style={{ fontSize: 10, alignSelf: user.uid == sent_by ? "flex-end" : "flex-start", paddingTop: 5, color: systemTheme == "light" ? "black" : "white" }}>{isAndroid ? formatAndroid(locale_date) : locale_date}</Text>
-            </View>
-          </TouchableWithoutFeedback>
+          <Text style={[styles.messageDate,{color: systemTheme=="light"?"grey":"white"}]}>{arrayDates[messageID.indexOf(id)]}</Text>
+          <View style={[styles.messageBubble, { alignSelf: user.uid == sent_by ? "flex-end" : "flex-start", backgroundColor: user.uid == sent_by ? accentColour : "#9A9A9A" }, {borderBottomLeftRadius: user.uid == sent_by ? 17 : 0}, {borderBottomRightRadius: user.uid == sent_by ? 0 : 17}]}>
+            <Text style={{ fontFamily: systemFont, fontSize: 17, color: systemTheme=="light"?"white":"white" }}>{text}</Text>
+            <Text style={{ fontSize: 10, alignSelf: user.uid == sent_by ? "flex-end" : "flex-start", paddingTop: 5, color: systemTheme=="light"?"white":"white" }}>{new Date(time).toLocaleTimeString([], { hour: "numeric", minute: "numeric" })}</Text>
+          </View>
         </View>
       )
     } else {
       return (
-        <TouchableWithoutFeedback onLongPress={() => { user.uid == sent_by ? Alert.alert("Options", "", alertOptions) : null }}>
-          <View style={[styles.messageBubble, { alignSelf: user.uid == sent_by ? "flex-end" : "flex-start", backgroundColor: user.uid == sent_by ? accentColour : "grey" }]}>
-            <Text style={{ fontFamily: systemFont, fontSize: 17, color: systemTheme == "light" ? "black" : "white" }}>{text}</Text>
-            <Text style={{ fontSize: 10, alignSelf: user.uid == sent_by ? "flex-end" : "flex-start", paddingTop: 5, color: systemTheme == "light" ? "black" : "white" }}>{isAndroid ? formatAndroid(locale_date) : locale_date}</Text>
-          </View>
-        </TouchableWithoutFeedback>
+        <View style={[styles.messageBubble, { alignSelf: user.uid == sent_by ? "flex-end" : "flex-start", backgroundColor: user.uid == sent_by ? accentColour : "#9A9A9A" }, {borderBottomRightRadius: user.uid == sent_by ? 0 : 17}, {borderBottomLeftRadius: user.uid == sent_by ? 17 : 0}]}>
+          <Text style={{ fontFamily: systemFont, fontSize: 17, color: systemTheme=="light"?"white":"white" }}>{text}</Text>
+          <Text style={{ fontSize: 10, alignSelf: user.uid == sent_by ? "flex-end" : "flex-start", paddingTop: 5, color: systemTheme=="light"?"white":"white" }}>{new Date(time).toLocaleTimeString([], { hour: "numeric", minute: "numeric" })}</Text>
+        </View>
       )
     }
-
   }
 
   const renderMessageBubble = ({ item }) => (
-    <MessageBubble text={item.text} sent_by={item.sent_by} time={item.sent_at} id={item.id} message={item} />
+    <MessageBubble text={item.text} sent_by={item.sent_by} time={item.sent_at} id={item.id} />
   );
 
   return (
 
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
-      style={systemTheme == "light" ? styles.mainContainer : styles.mainContainer__dark}
+      style={systemTheme=="light" ? styles.mainContainer : styles.mainContainer__dark}
       keyboardVerticalOffset={110}
     >
-      <SafeAreaView style={{ flex: 1}}>
-        <View style={[styles.flatListContainer,{marginBottom:Platform.OS == "android"?60:17}]}>
+      <SafeAreaView style={{ flex: 1 }}>
+        <View style={styles.flatListContainer}>
           <FlatList showsVerticalScrollIndicator={false} data={messages} renderItem={renderMessageBubble} inverted contentContainerStyle={{ flexDirection: 'column-reverse' }} />
         </View>
         <SafeAreaView style={styles.inputContainer}>
-          <TextInput multiline value={text} onChangeText={setText} style={[systemTheme === "light" ? styles.messageInput : styles.messageInput__dark,{paddingVertical:Platform.OS=="android"?15:30}]} />
+          <TextInput multiline value={text} onChangeText={setText} style={systemTheme === "light" ? styles.messageInput : styles.messageInput__dark}/>
           <TouchableOpacity
             style={[styles.colourButton, { backgroundColor: accentColour }]}
             onPress={() => { sendMessage() }}
           >
             <View style={styles.sendButton}>
-              <Ionicons name="send" size={28} color="white" />
+              <Ionicons name="send" size={30} color="white" />
             </View>
           </TouchableOpacity>
         </SafeAreaView>

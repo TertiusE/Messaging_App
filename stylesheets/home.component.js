@@ -31,8 +31,11 @@ export default StyleSheet.create({
       flexDirection: "row",
       backgroundColor: "white",
       padding: 15,
+      borderTopWidth: 0.5,
       borderBottomWidth: 1,
       borderBottomColor: "#D9D9D9",
+      borderTopColor: "#D9D9D9",
+      
   },
 
   itemContainer__dark: {
@@ -41,6 +44,8 @@ export default StyleSheet.create({
     backgroundColor: "#1A1A1D",
     padding: 15,
     borderBottomWidth: 1,
+    borderTopWidth: 0.5,
+    borderTopColor: "#494949",
     borderBottomColor: "#494949",
 },
   itemSection: {

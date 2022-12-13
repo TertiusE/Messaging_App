@@ -9,6 +9,7 @@ import styles from "../stylesheets/login.component";
 import { Ionicons } from '@expo/vector-icons';
 import RNDateTimePicker from '@react-native-community/datetimepicker';
 import { useColorScheme } from 'react-native';
+import ProgressBar from '../components/ProgressBar'
 
 const auth = getAuth(fireApp)
 const db = getFirestore(fireApp)
@@ -25,7 +26,11 @@ const Register = ({ systemTheme, setUser, user, navigation }) => {
     const [visibility, setVisibility] = useState(true)
     const isAndroid = Platform.OS == "android"
     const [emailError, setError] = useState(false)
-
+    const [progress, setProgress] = useState(0);
+    const [progressVisible, setProgressVisible] = useState(false)
+    const [progressText, setProgressText] = useState("");
+    const [passwordStrength, setPasswordStrength] = useState("");
+    const [passwordErrorMessage, setPasswordError] = useState(false);
 
 
     const toggleVisibility = () => {
@@ -37,6 +42,24 @@ const Register = ({ systemTheme, setUser, user, navigation }) => {
         setShow(Platform.OS == "ios");
         setBirthDate(currentDate);
     };
+
+    const onPasswordChange = (passwordInput) => {
+        let passwordStrength = passwordInput.length > 10  
+            ? "Strong" 
+            : passwordInput.length >= 7
+            ? "Medium" 
+            : "Weak";
+        setPassword(passwordInput)
+        setProgress((passwordInput.length / 10) * 100)
+        setProgressText(passwordStrength)
+        setPasswordStrength(passwordStrength)
+    }
+
+    const getActiveColor = (type) => {
+        if (type === "Strong") return "#8BC926";
+        if (type === "Medium") return "#FEBD01";
+        return "#FF0054"
+    }
 
 
     const onRegister = async () => {
@@ -151,9 +174,10 @@ const Register = ({ systemTheme, setUser, user, navigation }) => {
                                 style={[styles.inputText, { flex: 1 }]}
                                 placeholder="Password"
                                 value={password}
-                                onChangeText={setPassword}
+                                onChangeText={onPasswordChange}
                                 secureTextEntry={visibility}
                                 textContentType="newPassword"
+                                onFocus={() => {setProgressVisible(true); setPasswordError(false)}}
                             />
                             <TouchableWithoutFeedback onPress={() => { toggleVisibility(); }}>
                                 <View style={{ position: 'absolute', left: "88%", top: "25%" }}>
@@ -161,6 +185,14 @@ const Register = ({ systemTheme, setUser, user, navigation }) => {
                                 </View>
                             </TouchableWithoutFeedback>
                         </View>
+                        {progressVisible &&
+                        <ProgressBar 
+                            progress={progress}
+                            barColor={getActiveColor(passwordStrength)}
+                            backgroundColor="white"
+                            borderColor={getActiveColor(passwordStrength)}
+                        />}
+                        {progressText && <Text style={{color: getActiveColor(passwordStrength)}}>{progressText}</Text>}
                     </View>
                     <TouchableOpacity style={[styles.loginButton, { backgroundColor: '#919CFF', shadowOpacity: colorScheme == "light" ? 1 : 0 }]} onPress={onRegister}>
                         <Text style={styles.loginText}>Register</Text>
