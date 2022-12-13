@@ -45,8 +45,8 @@ const Register = ({ systemTheme, setUser, user, navigation }) => {
                     setUser(userCredential.user)
                     setDoc(doc(db, 'users', userCredential.user.uid), {
                         uid: userCredential.user.uid,
-                        fName: fName,
-                        lName: lName,
+                        fName: fName.trim(),
+                        lName: lName.trim(),
                         email: email,
                         photoUrl: "https://images.unsplash.com/photo-1670327138103-c71ef29be098?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=464&q=80",
                         conversations: [],

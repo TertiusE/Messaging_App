@@ -1,6 +1,5 @@
 import { UPDATE_USER, LOADING_STATE, UPDATE_ACCENT_COLOR, UPDATE_FONT, UPDATE_THEME, UPDATE_DATE_OF_BIRTH } from "../actionTypes"
 
-
 const initialState = {
     isLoading: true,
     user: null,

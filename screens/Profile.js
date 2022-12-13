@@ -33,7 +33,8 @@ const Profile = ({ user, setUser, setAccentColour, setSystemFont, setLoading, se
         const userUnion = await updateDoc(userRef, {
             fName: fName,
             lName: lName,
-            dateOfBirth: birthDate.getTime()
+            dateOfBirth: birthDate.getTime(),
+            photoUrl: profileImg
         });
     }
 
@@ -43,20 +44,6 @@ const Profile = ({ user, setUser, setAccentColour, setSystemFont, setLoading, se
         setlName(user.lName)
         setBirthDate(new Date(user.dateOfBirth))
     }, [isFocused])
-    /* Dispatch User Info changes */
-
-    const onSaveChangesClicked = () => {
-        if (/\.(jpg|jpeg|png|webp|avif|gif|svg)$/.test(profileImg)) {
-            userChanges.profileImage = profileImg;
-            setProfileImg(profileImg)
-        } else {
-            setProfileImg(
-                "https://s3-eu-west-1.amazonaws.com/artsthread-content/images/users/68ebb7a3c21864ae50b17a28b4866a94.jpg"
-            );
-        }
-
-        console.log(userChanges);
-    };
 
     const onChange = (event, selectedDate) => {
         const currentDate = selectedDate;
