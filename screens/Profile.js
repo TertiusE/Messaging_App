@@ -127,7 +127,7 @@ const Profile = ({ user, setUser, setAccentColour, setSystemFont, setLoading, se
                         <View style={{ flex: 1 }}>
                             {isAndroid && (
                                 <View style={{ flex: 1, flexDirection: "row", justifyContent: "flex-end", height: 50, marginTop:29 }}>
-                                    <View style={{ borderColor: systemTheme == "light" ? "black" : "white", borderWidth: 2, marginRight: 10, height: 38, alignItems:"center" }}>
+                                    <View style={{ borderColor: systemTheme == "light" ? "black" : "white", borderWidth: 2, borderRadius:8, marginRight: 10, height: 38, alignItems:"center" }}>
                                         <Text style={{ color: systemTheme == "light" ? "black" : "white", padding: 5}}>{birthDate.toDateString()}</Text>
                                     </View>
                                     <View style={{ height: 60 }}>

@@ -24,6 +24,9 @@ function HomeNav({ accentColour, systemFont, systemTheme }) {
             backgroundColor: systemTheme === 'light' ? 'white' : '#1A1A1B',
             bottomBorderColor:"white"
           },
+        cardStyle: {
+            backgroundColor: systemTheme === 'light' ? 'white' : '#1A1A1B',
+        }
     }
     return (
         <Stack.Navigator>

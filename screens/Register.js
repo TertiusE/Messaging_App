@@ -97,7 +97,7 @@ const Register = ({ systemTheme, setUser, user, navigation }) => {
                             <View style={{ flex: 1 }}>
                                 {isAndroid && (
                                     <View style={{flex:1,flexDirection:"row", justifyContent:"flex-end", height:50}}>
-                                        <View style={{borderColor: colorScheme=="light" ? "black":"white", borderWidth: 3, marginRight:10, height:38}}>
+                                        <View style={{borderColor: colorScheme=="light" ? "black":"white", borderWidth: 3, borderRadius:8, marginRight:10, height:38}}>
                                             <Text style={{color:colorScheme=="light" ? "black":"white", padding:5}}>{birthDate.toDateString()}</Text>
                                         </View>
                                         <View style={{height:60}}>
