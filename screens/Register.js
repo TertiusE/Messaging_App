@@ -23,6 +23,8 @@ const Register = ({ systemTheme, setUser, user, navigation }) => {
     const [open, setOpen] = useState(false)
     const [password, setPassword] = useState("")
     const [visibility, setVisibility] = useState(true)
+    const isAndroid = Platform.OS == "android"
+
 
     const toggleVisibility = () => {
         setVisibility(!visibility)
@@ -65,10 +67,10 @@ const Register = ({ systemTheme, setUser, user, navigation }) => {
     return (
         <KeyboardAvoidingView
             behavior={Platform.OS === "ios" ? "padding" : "height"}
-            style={{ flex: 1, backgroundColor:colorScheme=="light"?"white":"#1A1A1D" }}>
+            style={{ flex: 1, backgroundColor: colorScheme == "light" ? "white" : "#1A1A1D" }}>
             <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
                 <SafeAreaView style={styles.mainContainer}>
-                    <Text style={[styles.header, {color:colorScheme=="light"?"black":"white"}]}>Register to Begin</Text>
+                    <Text style={[styles.header, { color: colorScheme == "light" ? "black" : "white" }]}>Register to Begin</Text>
                     <Text style={styles.subheader}>Create your account details</Text>
                     <View style={styles.inputContainer}>
                         <Text style={styles.inputLabel}>First Name</Text>
@@ -89,21 +91,22 @@ const Register = ({ systemTheme, setUser, user, navigation }) => {
                             autoComplete="name-family"
                             textContentType="familyName"
                         />
-                        <View style={{ flexDirection: "row", marginBottom:30 }}>
-                            <Text style={styles.inputLabel}>Date of Birth</Text>
-                            <View style={{ flex: 1 }}>
-                                <RNDateTimePicker
-                                    value={birthDate}
-                                    mode="date"
-                                    is24Hour={true}
-                                    onChange={onChange}
-                                    themeVariant={colorScheme}
-                                    maximumDate={new Date()}
-                                    style={{ position: "absolute", left: "41%", top: 0 }}
-                                />
+                        {!isAndroid &&
+                            <View style={{ flexDirection: "row", marginBottom: 30 }}>
+                                <Text style={styles.inputLabel}>Date of Birth</Text>
+                                <View style={{ flex: 1 }}>
+                                    <RNDateTimePicker
+                                        value={birthDate}
+                                        mode="date"
+                                        is24Hour={true}
+                                        onChange={onChange}
+                                        themeVariant={colorScheme}
+                                        maximumDate={new Date()}
+                                        style={{ position: "absolute", left: "41%", top: 0 }}
+                                    />
+                                </View>
                             </View>
-                        </View>
-
+                        }
                         <Text style={styles.inputLabel}>Email Address</Text>
                         <TextInput
                             style={styles.inputText}
@@ -131,14 +134,14 @@ const Register = ({ systemTheme, setUser, user, navigation }) => {
                             </TouchableWithoutFeedback>
                         </View>
                     </View>
-                    <TouchableOpacity style={[styles.loginButton, { backgroundColor: '#919CFF', shadowOpacity:colorScheme=="light"?1:0 }]} onPress={onRegister}>
+                    <TouchableOpacity style={[styles.loginButton, { backgroundColor: '#919CFF', shadowOpacity: colorScheme == "light" ? 1 : 0 }]} onPress={onRegister}>
                         <Text style={styles.loginText}>Register</Text>
                     </TouchableOpacity>
-                    <Button
-                        onPress={() => navigation.navigate("Login")}
-                        title="Login"
-                        color="grey"
-                    />
+                    <TouchableWithoutFeedback onPress={() => navigation.navigate("Login")}>
+                        <View style={{ marginTop: 9 }}>
+                            <Text style={{ color: "grey", fontSize: 18 }}>Login</Text>
+                        </View>
+                    </TouchableWithoutFeedback>
                 </SafeAreaView>
             </TouchableWithoutFeedback>
         </KeyboardAvoidingView>

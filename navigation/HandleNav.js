@@ -7,12 +7,15 @@ import { getAuth, onAuthStateChanged } from "firebase/auth";
 import fireApp from '../config/firebase';
 import { connect } from 'react-redux';
 import { setUser } from '../redux/actions';
+import { useColorScheme } from 'react-native';
+
 
 
 const auth = getAuth(fireApp)
 
 const HandleNav = ({user, setUser}) => {
     const [isLoading, setLoading] = useState(true)
+    let colorScheme = useColorScheme()
 
     useEffect(()=>{
         onAuthStateChanged(auth, authUser => {
@@ -34,7 +37,7 @@ const HandleNav = ({user, setUser}) => {
     }
 
     return(
-        <NavigationContainer>
+        <NavigationContainer theme={{colors:{background: colorScheme == "light" ? "white" : "#1A1A1D"}}}>
             {user ? <HomeNav /> : <AuthNav /> }
         </NavigationContainer>
     )

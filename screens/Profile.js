@@ -19,6 +19,7 @@ const Profile = ({ user, setUser, setAccentColour, setSystemFont, setLoading, se
     const [modalVisible, setModalVisible] = useState(false);
     const isFocused = useIsFocused()
     const db = getFirestore(fireApp);
+    const isAndroid = Platform.OS == "android"
 
 
     const state = store.getState();
@@ -117,6 +118,7 @@ const Profile = ({ user, setUser, setAccentColour, setSystemFont, setLoading, se
                         onChangeText={setlName}
                         keyboardAppearance={systemTheme}
                     />
+                    {!isAndroid &&
                     <View style={{ flexDirection: "row" }}>
                         <Text style={[systemTheme == 'light' ? styles.inputLabel : styles.inputLabel_dark, { fontFamily: systemFont }]}>Date of Birth</Text>
                         <View style={{ flex: 1 }}>
@@ -131,6 +133,7 @@ const Profile = ({ user, setUser, setAccentColour, setSystemFont, setLoading, se
                             />
                         </View>
                     </View>
+                    }
                     <TouchableOpacity style={[systemTheme == 'light' ? styles.saveButton : styles.saveButton__dark, { backgroundColor: accentColour, marginTop: 50 }]} onPress={() => updateSettings()}>
                         <Text style={[styles.saveText, { fontFamily: systemFont }]}>Save Changes</Text>
                     </TouchableOpacity>

@@ -30,6 +30,16 @@ const Message = ({ user, accentColour, systemTheme, systemFont, route }) => {
   const [messageArray, setMessageArray] = useState([]);
   const [arrayDates, setArray] = useState([])
   const [messageID, setIDArray] = useState([])
+  const isAndroid = Platform.OS == "android"
+
+  const formatAndroid = (date) => {
+    let date_array = date.split(":").slice(0, 2)
+    console.log(date_array)
+    if (parseInt(date_array[0]) > 12) {
+      return `${parseInt(date_array[0]) - 12}:${date_array[1]} PM`
+    }
+    return `${date_array[0]}:${date_array[1]} AM`
+  }
 
   useEffect(() => {
     const fetchData = async () => {
@@ -110,26 +120,29 @@ const Message = ({ user, accentColour, systemTheme, systemFont, route }) => {
   const MessageBubble = ({ text, sent_by, time, id, message }) => {
     let alertOptions = [
       { text: "Delete", onPress: () => { deleteMessage(message) } },
-      { text: "Cancel", onPress: () => {} }
+      { text: "Cancel", onPress: () => { } }
     ]
+
+    let locale_date = new Date(time).toLocaleTimeString([], { hour: "numeric", minute: "numeric"})
+
     if (messageID.includes(id)) {
       return (
         <View>
           <Text style={[styles.messageDate, { color: systemTheme == "light" ? "black" : "white" }]}>{arrayDates[messageID.indexOf(id)]}</Text>
-          <TouchableWithoutFeedback onLongPress={() => {user.uid == sent_by ? Alert.alert("Options", "", alertOptions) : null}}>
+          <TouchableWithoutFeedback onLongPress={() => { user.uid == sent_by ? Alert.alert("Options", "", alertOptions) : null }}>
             <View style={[styles.messageBubble, { alignSelf: user.uid == sent_by ? "flex-end" : "flex-start", backgroundColor: user.uid == sent_by ? accentColour : "grey" }]}>
               <Text style={{ fontFamily: systemFont, fontSize: 17, color: systemTheme == "light" ? "black" : "white" }}>{text}</Text>
-              <Text style={{ fontSize: 10, alignSelf: user.uid == sent_by ? "flex-end" : "flex-start", paddingTop: 5, color: systemTheme == "light" ? "black" : "white" }}>{new Date(time).toLocaleTimeString([], { hour: "numeric", minute: "numeric" })}</Text>
+              <Text style={{ fontSize: 10, alignSelf: user.uid == sent_by ? "flex-end" : "flex-start", paddingTop: 5, color: systemTheme == "light" ? "black" : "white" }}>{isAndroid ? formatAndroid(locale_date) : locale_date}</Text>
             </View>
           </TouchableWithoutFeedback>
         </View>
       )
     } else {
       return (
-        <TouchableWithoutFeedback onLongPress={() => {user.uid == sent_by ? Alert.alert("Options", "", alertOptions) : null}}>
+        <TouchableWithoutFeedback onLongPress={() => { user.uid == sent_by ? Alert.alert("Options", "", alertOptions) : null }}>
           <View style={[styles.messageBubble, { alignSelf: user.uid == sent_by ? "flex-end" : "flex-start", backgroundColor: user.uid == sent_by ? accentColour : "grey" }]}>
             <Text style={{ fontFamily: systemFont, fontSize: 17, color: systemTheme == "light" ? "black" : "white" }}>{text}</Text>
-            <Text style={{ fontSize: 10, alignSelf: user.uid == sent_by ? "flex-end" : "flex-start", paddingTop: 5, color: systemTheme == "light" ? "black" : "white" }}>{new Date(time).toLocaleTimeString([], { hour: "numeric", minute: "numeric" })}</Text>
+            <Text style={{ fontSize: 10, alignSelf: user.uid == sent_by ? "flex-end" : "flex-start", paddingTop: 5, color: systemTheme == "light" ? "black" : "white" }}>{isAndroid ? formatAndroid(locale_date) : locale_date}</Text>
           </View>
         </TouchableWithoutFeedback>
       )

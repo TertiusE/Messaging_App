@@ -96,7 +96,7 @@ function MainTabNavigator({ systemFont, accentColour, systemTheme }) {
             color: systemTheme === 'light' ? 'black' : 'white',
             fontFamily: systemFont
           }, tabBarActiveTintColor: `${accentColour}`,
-          headerRight: () => <TouchableOpacity onPress={signOut}><Ionicons style={{ marginRight: 10, color: `${accentColour}` }} name="log-out-outline" size="34" /></TouchableOpacity>
+          headerRight: () => <TouchableOpacity onPress={signOut}><Ionicons style={{ marginRight: 10, color: `${accentColour}` }} name="log-out-outline" size={34} /></TouchableOpacity>
         }}
       />
     </Tab.Navigator>

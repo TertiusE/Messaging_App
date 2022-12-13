@@ -45,14 +45,14 @@ export default StyleSheet.create({
   },
   sectionText: {
     flex: 1,
-    textAlign: "flex-start",
+    textAlign: "left",
     fontSize: 18,
     fontWeight: "600",
     color: "#A6A6A6",
   },
   sectionText__dark: {
     flex: 1,
-    textAlign: "flex-start",
+    textAlign: "left",
     fontSize: 18,
     fontWeight: "600",
     color: "white",

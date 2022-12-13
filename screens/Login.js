@@ -29,7 +29,7 @@ const Login = ({ setUser, navigation, user }) => {
                     (userCredential) => {
                         setUser(userCredential.user);
                     }
-                ).catch((err) =>console.log(err));
+                ).catch((err) => console.log(err));
             }
         } catch (err) {
             console.log(err);
@@ -39,11 +39,11 @@ const Login = ({ setUser, navigation, user }) => {
     return (
         <KeyboardAvoidingView
             behavior={Platform.OS === "ios" ? "padding" : "height"}
-            style={{ flex: 1, backgroundColor:colorScheme=="light"?"white":"#1A1A1D" }}>
+            style={{ flex: 1, backgroundColor: colorScheme == "light" ? "white" : "#1A1A1D" }}>
             <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
                 <SafeAreaView style={styles.mainContainer}>
                     <Image style={styles.logo} source={Logo} />
-                    <Text style={[styles.header,{color:colorScheme=="light"?"black":"white"}]}>Welcome to MyMessages</Text>
+                    <Text style={[styles.header, { color: colorScheme == "light" ? "black" : "white" }]}>Welcome to MyMessages</Text>
                     <Text style={styles.subheader}>Login to continue</Text>
                     <View style={styles.inputContainer}>
                         <Text style={styles.inputLabel}>Email Address</Text>
@@ -73,14 +73,14 @@ const Login = ({ setUser, navigation, user }) => {
                             </TouchableWithoutFeedback>
                         </View>
                     </View>
-                    <TouchableOpacity style={[styles.loginButton, {shadowOpacity:colorScheme=="light"?1:0}]} onPress={onLogin} >
+                    <TouchableOpacity style={[styles.loginButton, { shadowOpacity: colorScheme == "light" ? 1 : 0 }]} onPress={onLogin} >
                         <Text style={styles.loginText}>Login</Text>
                     </TouchableOpacity>
-                    <Button
-                        onPress={() => navigation.navigate("Register")}
-                        title="Register"
-                        color="grey"
-                    />
+                    <TouchableWithoutFeedback onPress={() => navigation.navigate("Register")}>
+                        <View style={{ marginTop: 9 }}>
+                            <Text style={{ color: "grey", fontSize:18 }}>Register</Text>
+                        </View>
+                    </TouchableWithoutFeedback>
                 </SafeAreaView>
             </TouchableWithoutFeedback>
         </KeyboardAvoidingView>

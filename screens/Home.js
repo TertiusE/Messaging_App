@@ -15,6 +15,14 @@ import store from '../redux/store/index'
 const auth = getAuth(fireApp)
 const db = getFirestore(fireApp)
 
+const formatAndroid = (date) => {
+    let date_array = date.split(":").slice(0,2)
+    if (parseInt(date_array[0]) > 12){
+        return `${parseInt(date_array[0])-12}:${date_array[1]} PM`
+    }
+    return `${date_array[0]}:${date_array[1]} AM`
+}
+
 function MessageItem({ fName, lName, time, message, otherUser }) {
     const state = store.getState();
     const systemTheme = state.dataReducer.systemTheme
@@ -23,6 +31,7 @@ function MessageItem({ fName, lName, time, message, otherUser }) {
     const systemFont = state.dataReducer.systemFont
     let [m, setM] = useState({ sent_at: "", text: "" })
     const isFocused = useIsFocused()
+    const isAndroid = Platform.OS == "android"
 
     useEffect(() => {
         let allMessages = [];
@@ -38,7 +47,8 @@ function MessageItem({ fName, lName, time, message, otherUser }) {
             allMessages = allMessages.sort((m1, m2) => (m1.sent_at < m2.sent_at) ? 1 : (m1.sent_at > m2.sent_at) ? -1 : 0)
             setM({ sent_at: "", text: "" })
             if (allMessages.length !== 0) {
-                setM({ sent_at: new Date(allMessages[0].sent_at).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }), text: allMessages[0].text })
+                let sent_date = new Date(allMessages[0].sent_at).toLocaleTimeString(['en-US'], { hour: 'numeric', minute: '2-digit' })
+                setM({ sent_at: isAndroid ? formatAndroid(sent_date):sent_date , text: allMessages[0].text })
             }
 
         })
