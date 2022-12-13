@@ -2,7 +2,7 @@ import 'dotenv/config';
 
 export default {
   "expo": {
-    "name": "Messaging_App",
+    "name": "MyMessages",
     "slug": "Messaging_App",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -26,7 +26,9 @@ export default {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
-      }
+      },
+      "package": "com.messagingapp.mymessages",
+      "versionCode": 1
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -37,7 +39,10 @@ export default {
       projectId: process.env.PROJECT_ID,
       storageBucket: process.env.STORAGE_BUCKET,
       messagingSenderId: process.env.MESSAGING_SENDER_ID,
-      appId: process.env.APP_ID
-    }
+      appId: process.env.APP_ID,
+      "eas": {
+        "projectId": "9c0b9127-9047-4977-aac8-4ff0cb594407"
+      }
+    },
   }
 }
