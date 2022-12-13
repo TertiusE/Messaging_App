@@ -31,6 +31,7 @@ const Register = ({ systemTheme, setUser, user, navigation }) => {
     const [progressText, setProgressText] = useState("");
     const [passwordStrength, setPasswordStrength] = useState("");
     const [passwordErrorMessage, setPasswordError] = useState(false);
+    const [emailErrorText, setErrorText] = useState("")
 
 
     const toggleVisibility = () => {
@@ -64,6 +65,7 @@ const Register = ({ systemTheme, setUser, user, navigation }) => {
 
     const onRegister = async () => {
         setError(false)
+        setErrorText("")
         try {
             if (email !== '' && password !== '') {
                 createUserWithEmailAndPassword(auth, email, password).then((userCredential) => {
@@ -84,8 +86,13 @@ const Register = ({ systemTheme, setUser, user, navigation }) => {
                         messages: []
                     })
                 }).catch((err) => {
+                    console.log(err.code)
                     if (err.code == "auth/email-already-in-use") {
                         setError(true)
+                        setErrorText("Email Is In Use")
+                    }else if (err.code == "auth/invalid-email") {
+                        setError(true)
+                        setErrorText("Invalid Email")
                     }
                 })
             }
@@ -164,7 +171,7 @@ const Register = ({ systemTheme, setUser, user, navigation }) => {
                             />
                             {emailError &&
                                 <View style={{ position: "absolute", right: 0, bottom: -3 }}>
-                                    <Text style={{ color: "red" }}>Email is in use</Text>
+                                    <Text style={{ color: "red" }}>{emailErrorText}</Text>
                                 </View>
                             }
                         </View>
