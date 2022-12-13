@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
-import { Platform, SafeAreaView, Text, StyleSheet, Image, Button, View, TextInput, TouchableOpacity, Modal, KeyboardAvoidingView, TouchableWithoutFeedback } from "react-native";
+import { useState, useEffect, useRef } from "react";
+import { Platform, SafeAreaView, Text, StyleSheet, Image, Button, View, TextInput, TouchableOpacity, Modal, KeyboardAvoidingView, TouchableWithoutFeedback, Animated } from "react-native";
 import { setUser, setAccentColour, setSystemFont, setLoading, setTheme, setDateOfBirth } from "../redux/actions";
 import { connect } from "react-redux";
 import styles from '../stylesheets/profile.component';
@@ -22,7 +22,8 @@ const Profile = ({ user, setUser, setAccentColour, setSystemFont, setLoading, se
     const isFocused = useIsFocused()
     const db = getFirestore(fireApp);
     const isAndroid = Platform.OS == "android"
-
+    const bounceValue = useRef(new Animated.Value(0)).current;
+    const AnimatedTouchable = Animated.createAnimatedComponent(TouchableOpacity);
 
     const state = store.getState();
     const systemTheme = state.dataReducer.systemTheme
@@ -139,7 +140,21 @@ const Profile = ({ user, setUser, setAccentColour, setSystemFont, setLoading, se
                             }
                         </View>
                     </View>
-                    <TouchableOpacity style={[systemTheme == 'light' ? styles.saveButton : styles.saveButton__dark, { backgroundColor: accentColour, marginTop: 50 }]} onPress={() => updateSettings()}>
+                    <TouchableOpacity style={[systemTheme == 'light' ? styles.saveButton : styles.saveButton__dark, { backgroundColor: accentColour, marginTop: 50 },  { transform: [{ translateY: bounceValue }]}]} onPress={() => {updateSettings(); 
+                                  Animated.sequence([
+                                    Animated.spring(bounceValue, {
+                                      velocity: 1,
+                                      mass: 0.1,
+                                      toValue: 3,
+                                      useNativeDriver: true,
+                                    }),
+                                    Animated.spring(bounceValue, {
+                                      velocity: 1,
+                                      mass: 0.1,
+                                      toValue: -1,
+                                      useNativeDriver: true,
+                                    }),
+                                  ]).start();}}>
                         <Text style={[styles.saveText, { fontFamily: systemFont }]}>Save Changes</Text>
                     </TouchableOpacity>
                 </View>
