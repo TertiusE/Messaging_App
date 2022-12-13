@@ -24,6 +24,7 @@ const Register = ({ systemTheme, setUser, user, navigation }) => {
     const [password, setPassword] = useState("")
     const [visibility, setVisibility] = useState(true)
     const isAndroid = Platform.OS == "android"
+    const [emailError, setError] = useState(false)
 
 
 
@@ -39,6 +40,7 @@ const Register = ({ systemTheme, setUser, user, navigation }) => {
 
 
     const onRegister = async () => {
+        setError(false)
         try {
             if (email !== '' && password !== '') {
                 createUserWithEmailAndPassword(auth, email, password).then((userCredential) => {
@@ -58,7 +60,11 @@ const Register = ({ systemTheme, setUser, user, navigation }) => {
                     setDoc(doc(db, 'conversations', userCredential.user.uid), {
                         messages: []
                     })
-                }).catch((err) => { console.log(err) })
+                }).catch((err) => {
+                    if (err.code == "auth/email-already-in-use") {
+                        setError(true)
+                    }
+                })
             }
         } catch (err) {
             console.log(err)
@@ -96,16 +102,16 @@ const Register = ({ systemTheme, setUser, user, navigation }) => {
                             <Text style={styles.inputLabel}>Date of Birth</Text>
                             <View style={{ flex: 1 }}>
                                 {isAndroid && (
-                                    <View style={{flex:1,flexDirection:"row", justifyContent:"flex-end", height:50}}>
-                                        <View style={{borderColor: colorScheme=="light" ? "black":"white", borderWidth: 3, borderRadius:8, marginRight:10, height:38}}>
-                                            <Text style={{color:colorScheme=="light" ? "black":"white", padding:5}}>{birthDate.toDateString()}</Text>
+                                    <View style={{ flex: 1, flexDirection: "row", justifyContent: "flex-end", height: 50 }}>
+                                        <View style={{ borderColor: colorScheme == "light" ? "black" : "white", borderWidth: 3, borderRadius: 8, marginRight: 10, height: 38 }}>
+                                            <Text style={{ color: colorScheme == "light" ? "black" : "white", padding: 5 }}>{birthDate.toDateString()}</Text>
                                         </View>
-                                        <View style={{height:60}}>
+                                        <View style={{ height: 60 }}>
                                             <TouchableWithoutFeedback onPress={() => { setShow(!show) }}>
                                                 <Ionicons suppressHighlighting={true} name={"calendar"} size={35} color="#919CFF" />
                                             </TouchableWithoutFeedback>
                                         </View>
-                                        
+
                                     </View>
 
                                 )}
@@ -123,15 +129,22 @@ const Register = ({ systemTheme, setUser, user, navigation }) => {
                             </View>
                         </View>
                         <Text style={styles.inputLabel}>Email Address</Text>
-                        <TextInput
-                            style={styles.inputText}
-                            placeholder="Email"
-                            value={email}
-                            onChangeText={setEmail}
-                            autoComplete="email"
-                            textContentType="emailAddress"
-                            keyboardType="email-address"
-                        />
+                        <View>
+                            <TextInput
+                                style={styles.inputText}
+                                placeholder="Email"
+                                value={email}
+                                onChangeText={setEmail}
+                                autoComplete="email"
+                                textContentType="emailAddress"
+                                keyboardType="email-address"
+                            />
+                            {emailError &&
+                                <View style={{ position: "absolute", right: 0, bottom: -3 }}>
+                                    <Text style={{ color: "red" }}>Email is in use</Text>
+                                </View>
+                            }
+                        </View>
                         <Text style={styles.inputLabel}>Password</Text>
                         <View style={{ flexDirection: "row", position: 'relative' }}>
                             <TextInput

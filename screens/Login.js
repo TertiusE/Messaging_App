@@ -17,22 +17,33 @@ const Login = ({ setUser, navigation, user }) => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [visibility, setVisibility] = useState(true);
+    const [emailError, setEmailError] = useState(false)
+    const [passwordError, setPasswordError] = useState(false)
+
 
     const toggleVisibility = () => {
         setVisibility(!visibility);
     };
 
     const onLogin = async () => {
+        setEmailError(false)
+        setPasswordError(false)
         try {
             if (email !== "" && password !== "") {
                 signInWithEmailAndPassword(auth, email, password).then(
                     (userCredential) => {
                         setUser(userCredential.user);
                     }
-                ).catch((err) => console.log(err));
+                ).catch((err) => {
+                    if (err.code == ("auth/wrong-password")) {
+                        setPasswordError(true)
+                    } else if (err.code == ("auth/user-not-found")) {
+                        setEmailError(true)
+                    }
+                });
             }
-        } catch (err) {
-            console.log(err);
+        } catch(err) {
+            console.log(err)
         }
     };
 
@@ -47,15 +58,22 @@ const Login = ({ setUser, navigation, user }) => {
                     <Text style={styles.subheader}>Login to continue</Text>
                     <View style={styles.inputContainer}>
                         <Text style={styles.inputLabel}>Email Address</Text>
-                        <TextInput
-                            style={styles.inputText}
-                            placeholder="Email"
-                            value={email}
-                            onChangeText={setEmail}
-                            autoComplete="email"
-                            textContentType="emailAddress"
-                            keyboardType="email-address"
-                        />
+                        <View>
+                            <TextInput
+                                style={styles.inputText}
+                                placeholder="Email"
+                                value={email}
+                                onChangeText={setEmail}
+                                autoComplete="email"
+                                textContentType="emailAddress"
+                                keyboardType="email-address"
+                            />
+                            {emailError &&
+                                <View style={{ position: "absolute", right: 0, bottom: -3 }}>
+                                    <Text style={{ color: "red" }}>Email does not exist</Text>
+                                </View>
+                            }
+                        </View>
                         <Text style={styles.inputLabel}>Password</Text>
                         <View style={{ flexDirection: "row", position: 'relative' }}>
                             <TextInput
@@ -66,6 +84,11 @@ const Login = ({ setUser, navigation, user }) => {
                                 secureTextEntry={visibility}
                                 textContentType="password"
                             />
+                            {passwordError &&
+                                <View style={{ position: "absolute", right: 0, bottom: -3 }}>
+                                    <Text style={{ color: "red" }}>Incorrect Password</Text>
+                                </View>
+                            }
                             <TouchableWithoutFeedback onPress={() => { toggleVisibility(); }}>
                                 <View style={{ position: 'absolute', left: "88%", top: "25%" }}>
                                     <Ionicons suppressHighlighting={true} name={visibility ? "eye-off" : "eye-sharp"} size={24} color="#5C4DF8" />
@@ -78,7 +101,7 @@ const Login = ({ setUser, navigation, user }) => {
                     </TouchableOpacity>
                     <TouchableWithoutFeedback onPress={() => navigation.navigate("Register")}>
                         <View style={{ marginTop: 9 }}>
-                            <Text style={{ color: "grey", fontSize:18 }}>Register</Text>
+                            <Text style={{ color: "grey", fontSize: 18 }}>Register</Text>
                         </View>
                     </TouchableWithoutFeedback>
                 </SafeAreaView>
