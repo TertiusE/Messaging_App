@@ -7,7 +7,7 @@ import { setUser, setAccentColour, setSystemFont, setLoading, setTheme } from ".
 import { doc, setDoc, getFirestore } from "firebase/firestore"
 import styles from "../stylesheets/login.component";
 import { Ionicons } from '@expo/vector-icons';
-import RNDateTimePicker from '@react-native-community/datetimepicker';
+// import RNDateTimePicker from '@react-native-community/datetimepicker';
 import { useColorScheme } from 'react-native';
 import ProgressBar from '../components/ProgressBar'
 
@@ -145,7 +145,7 @@ const Register = ({ systemTheme, setUser, user, navigation }) => {
                                     </View>
 
                                 )}
-                                {show &&
+                                {/* {show &&
                                     <RNDateTimePicker
                                         value={birthDate}
                                         mode="date"
@@ -155,7 +155,7 @@ const Register = ({ systemTheme, setUser, user, navigation }) => {
                                         maximumDate={new Date()}
                                         style={{ position: "absolute", left: "41%", top: 0 }}
                                     />
-                                }
+                                } */}
                             </View>
                         </View>
                         <Text style={styles.inputLabel}>Email Address</Text>

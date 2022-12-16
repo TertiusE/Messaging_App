@@ -20,7 +20,8 @@ export default {
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "me.natasha.ahammed"
     },
     "android": {
       "adaptiveIcon": {
@@ -41,7 +42,7 @@ export default {
       messagingSenderId: process.env.MESSAGING_SENDER_ID,
       appId: process.env.APP_ID,
       "eas": {
-        "projectId": "9c0b9127-9047-4977-aac8-4ff0cb594407"
+        "projectId": "c81c8159-99df-42ae-88fc-1dda6a594e45"
       }
     },
   }

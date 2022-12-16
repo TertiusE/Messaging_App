@@ -4,7 +4,7 @@ import { setUser, setAccentColour, setSystemFont, setLoading, setTheme, setDateO
 import { connect } from "react-redux";
 import styles from '../stylesheets/profile.component';
 import store from '../redux/store/index';
-import RNDateTimePicker from '@react-native-community/datetimepicker';
+//import RNDateTimePicker from '@react-native-community/datetimepicker';
 import { useIsFocused } from '@react-navigation/native'
 import { doc, updateDoc, getFirestore } from "firebase/firestore";
 import fireApp from "../config/firebase";
@@ -127,7 +127,7 @@ const Profile = ({ user, setUser, setAccentColour, setSystemFont, setLoading, se
                                 </View>
 
                             )}
-                            {show &&
+                            {/* {show &&
                                 <RNDateTimePicker
                                     value={birthDate}
                                     mode="date"
@@ -137,7 +137,7 @@ const Profile = ({ user, setUser, setAccentColour, setSystemFont, setLoading, se
                                     maximumDate={new Date()}
                                     style={{ position: "absolute", left: "41%", top: 25 }}
                                 />
-                            }
+                            } */}
                         </View>
                     </View>
                     <TouchableOpacity style={[systemTheme == 'light' ? styles.saveButton : styles.saveButton__dark, { backgroundColor: accentColour, marginTop: 50 },  { transform: [{ translateY: bounceValue }]}]} onPress={() => {updateSettings(); 
