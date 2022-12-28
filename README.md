@@ -4,7 +4,7 @@ A chat messaging app built with React Native and Firebase.
 ## Overview 
 <img src="https://i.postimg.cc/1z1Tz1KZ/Light-Mode.png" alt="drawing" width="100%"/>
 
-MyMessages ius a chat messaging app providing user authentication, real-time communication, and support for iOS and Android. The app provides a custom messaging experience with different options to select from, including dark/light mode, changing fonts, and different colour themes. Users can also change their profile settings, such as adding a profile photo or updating their personal information. 
+MyMessages is a chat messaging app providing user authentication, real-time communication, and support for iOS and Android. The app provides a custom messaging experience with different options to select from, including dark/light mode, changing fonts, and different colour themes. Users can also change their profile settings, such as adding a profile photo or updating their personal information. 
 
 ## Screens
 
